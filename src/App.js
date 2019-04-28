@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom'
+import React from 'react';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import {ImplicitCallback, SecureRoute, Security, withAuth} from '@okta/okta-react';
 import config from './config';
 import './App.css';

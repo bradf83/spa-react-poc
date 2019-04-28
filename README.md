@@ -24,6 +24,7 @@ This project is me playing around.....again
 
 * Split Pieces into other files
 * Use hooks instead of classes
+* Auth with hooks [Check This Post](https://developer.okta.com/blog/2019/03/06/simple-user-authentication-in-react)
 
 ###  Libraries I am using
 
