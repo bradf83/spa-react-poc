@@ -17,7 +17,7 @@ This project is me playing around.....again
 
 ### TODO
 
-* Add React Strap
+* Add Font Awesome
 * Customize React Strap
 * Add, Edit, Delete a company
 
@@ -38,6 +38,7 @@ This project is me playing around.....again
 * npm start / yarn start
 * yarn add react-router-dom
 * yarn add @okta/okta-react
+* yarn add bootstrap reactstrap react react-dom
 
 ### Questions
 
