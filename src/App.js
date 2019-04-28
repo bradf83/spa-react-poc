@@ -1,16 +1,17 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
+import {BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom'
 import {ImplicitCallback, SecureRoute, Security, withAuth} from '@okta/okta-react';
 import config from './config';
 import './App.css';
 import {
     Collapse,
+    Container,
     Navbar,
     NavbarToggler,
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink, ListGroup, ListGroupItem
+    NavLink, ListGroup, ListGroupItem, Form, FormGroup, Label, Input, Button
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faBuilding } from '@fortawesome/free-solid-svg-icons';
@@ -24,7 +25,8 @@ const App = () => {
                 <SiteNavigation/>
                 <Switch>
                     <Route exact path='/' component={Home}/>
-                    <SecureRoute path="/companies" component={withAuth(Companies)}/>
+                    <SecureRoute exact path="/companies" component={withAuth(Companies)}/>
+                    <SecureRoute path="/companies/add" component={withAuth(AddCompany)}/>
                     <Route path='/implicit/callback' component={ImplicitCallback}/>
                     {/*<Route component={NotFound}/>*/}
                 </Switch>
@@ -35,13 +37,13 @@ const App = () => {
 
 const Home = () => {
     return (
-        <div className="container">
+        <Container>
             <h3>
                 <FontAwesomeIcon icon={faHome} size="sm" className="mr-1"/>
                 Welcome
             </h3>
             <p>To the React POC application utilizing React, React Router, Bootstrap and Spring Boot!</p>
-        </div>
+        </Container>
     )
 };
 
@@ -75,7 +77,7 @@ class Companies extends React.Component {
     render() {
         const {companies} = this.state;
         return (
-            <div className="container">
+            <Container>
                 <h3>
                     <FontAwesomeIcon icon={faBuilding} size="sm" className="mr-1"/>
                     Companies
@@ -88,7 +90,83 @@ class Companies extends React.Component {
                         </ListGroupItem>
                     )}
                 </ListGroup>
-            </div>
+            </Container>
+        )
+    }
+}
+
+// TODO Convert to a hook?
+class AddCompany extends React.Component {
+
+    emptyCompany = {
+        code: '',
+        officialName: '',
+        commonName: ''
+    };
+
+    constructor(props){
+        super(props);
+        this.state = {
+            company: this.emptyCompany
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    /**
+     * On Change update the company with the changes
+     * @param event
+     */
+    handleChange(event) {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        let company = {...this.state.company};
+        company[name] = value;
+        this.setState({company});
+    }
+
+    // TODO: This is handling perfect path, what about errors and such
+    // TODO: Use React Router to push history and forward to the companies list page.  Example here: (https://developer.okta.com/blog/2018/07/19/simple-crud-react-and-spring-boot)
+    async handleSubmit(event){
+        event.preventDefault();
+        let company = {...this.state.company};
+        const token = await this.props.auth.getAccessToken();
+        await fetch('/companies', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(company)
+        });
+    }
+
+    render(){
+        const {company} = this.state;
+        return (
+            <Container>
+                <h3>Add Company</h3>
+                <Form onSubmit={this.handleSubmit}>
+                    <FormGroup>
+                        <Label for="code">Code</Label>
+                        <Input type="text" name="code" id="code" value={company.code || ''} onChange={this.handleChange}/>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="officialName">Official Name</Label>
+                        <Input type="text" name="officialName" id="officialName" value={company.officialName || ''} onChange={this.handleChange}/>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="commonName">Common Name</Label>
+                        <Input type="text" name="commonName" id="commonName" value={company.commonName || ''} onChange={this.handleChange}/>
+                    </FormGroup>
+                    <FormGroup>
+                        <Button color="primary" type="submit">Save</Button>{' '}
+                        <Button color="secondary" tag={Link} to="/companies">Cancel</Button>
+                    </FormGroup>
+                </Form>
+            </Container>
         )
     }
 }
@@ -114,7 +192,7 @@ class SiteNavigation extends React.Component {
         return (
             <div className="mb-1">
                 <Navbar color="light" light expand="md">
-                    <div className="container">
+                    <Container>
                         <NavbarBrand href="/">React POC</NavbarBrand>
                         <NavbarToggler onClick={this.toggle}/>
                         <Collapse isOpen={this.state.isOpen} navbar>
@@ -125,9 +203,12 @@ class SiteNavigation extends React.Component {
                                 <NavItem>
                                     <NavLink href="/companies">Companies</NavLink>
                                 </NavItem>
+                                <NavItem>
+                                    <NavLink href="/companies/add">Add Company</NavLink>
+                                </NavItem>
                             </Nav>
                         </Collapse>
-                    </div>
+                    </Container>
                 </Navbar>
             </div>
         );

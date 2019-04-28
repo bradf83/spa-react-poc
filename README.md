@@ -18,7 +18,8 @@ This project is me playing around.....again
 ### TODO
 
 * Customize React Strap
-* Add, Edit, Delete a company
+* Edit, Delete a company
+* Beef up add company, error handling, forward on save...
 
 ### Things To Figure Out
 
