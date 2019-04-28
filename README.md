@@ -17,7 +17,6 @@ This project is me playing around.....again
 
 ### TODO
 
-* Add Font Awesome
 * Customize React Strap
 * Add, Edit, Delete a company
 
@@ -39,6 +38,7 @@ This project is me playing around.....again
 * yarn add react-router-dom
 * yarn add @okta/okta-react
 * yarn add bootstrap reactstrap react react-dom
+* yarn add @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome
 
 ### Questions
 

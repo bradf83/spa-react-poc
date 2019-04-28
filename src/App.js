@@ -10,9 +10,10 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink, ListGroup
+    NavLink, ListGroup, ListGroupItem
 } from 'reactstrap';
-import ListGroupItem from "reactstrap/es/ListGroupItem";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faBuilding } from '@fortawesome/free-solid-svg-icons';
 
 
 const App = () => {
@@ -35,7 +36,10 @@ const App = () => {
 const Home = () => {
     return (
         <div className="container">
-            <h3>Welcome</h3>
+            <h3>
+                <FontAwesomeIcon icon={faHome} size="sm" className="mr-1"/>
+                Welcome
+            </h3>
             <p>To the React POC application utilizing React, React Router, Bootstrap and Spring Boot!</p>
         </div>
     )
@@ -72,10 +76,13 @@ class Companies extends React.Component {
         const {companies} = this.state;
         return (
             <div className="container">
-                <h3>Companies</h3>
-                <ListGroup>
+                <h3>
+                    <FontAwesomeIcon icon={faBuilding} size="sm" className="mr-1"/>
+                    Companies
+                </h3>
+                <ListGroup className="list-group-flush">
                     {companies.map(company =>
-                        <ListGroupItem key={company.code}>
+                        <ListGroupItem key={company._links.self.href}>
                             <p>{company.code}</p>
                             <small>{company.officialName}</small>
                         </ListGroupItem>
@@ -105,7 +112,7 @@ class SiteNavigation extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="mb-1">
                 <Navbar color="light" light expand="md">
                     <div className="container">
                         <NavbarBrand href="/">React POC</NavbarBrand>
