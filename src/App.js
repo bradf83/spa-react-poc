@@ -27,6 +27,7 @@ const App = () => {
                     <Route exact path='/' component={Home}/>
                     <SecureRoute exact path="/companies" component={withAuth(Companies)}/>
                     <SecureRoute path="/companies/add" component={withAuth(AddCompany)}/>
+                    <SecureRoute path="/companies/:id" component={withAuth(EditCompany)}/>
                     <Route path='/implicit/callback' component={ImplicitCallback}/>
                     {/*<Route component={NotFound}/>*/}
                 </Switch>
@@ -85,8 +86,9 @@ class Companies extends React.Component {
                 <ListGroup className="list-group-flush">
                     {companies.map(company =>
                         <ListGroupItem key={company._links.self.href}>
-                            <p>{company.code}</p>
-                            <small>{company.officialName}</small>
+                            {company.code}
+                            <div className="small">{company.officialName}</div>
+                            <a href={company._links.self.href}>Edit 2</a>
                         </ListGroupItem>
                     )}
                 </ListGroup>
@@ -167,6 +169,22 @@ class AddCompany extends React.Component {
                     </FormGroup>
                 </Form>
             </Container>
+        )
+    }
+}
+
+class EditCompany extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    render(){
+        return (
+        <Container>
+            <h3>Edit Company</h3>
+            <p>Implement Edit here!</p>
+        </Container>
         )
     }
 }
