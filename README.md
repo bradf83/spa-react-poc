@@ -5,7 +5,7 @@ This project is me playing around.....again
 1. Download and do a yarn install
 1. Run yarn start (notice in package.json currently proxying to localhost:8080 for api calls)
 1. Navigate to localhost:3000
-1. Home and About are public, companies expects you to log into OKTA.
+1. Home (Index/Click on React POC) is public, company endpoints expect you to be logged in.
 
 #### Steps
 
@@ -23,7 +23,6 @@ This project is me playing around.....again
 
 ### Things To Figure Out
 
-* Split Pieces into other files
 * Use hooks instead of classes
 * Auth with hooks [Check This Post](https://developer.okta.com/blog/2019/03/06/simple-user-authentication-in-react)
 
@@ -46,6 +45,8 @@ This project is me playing around.....again
 
 * Secure Route does not seem to be working
   * This was because of the not found route,not sure why at this point
+  * Try using a component on the not found route
+* How do I stop /companies/:id from rendering when going to /companies/garbage, force id as an number?
   
 ### Things to look into 
 
