@@ -11,7 +11,7 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink, ListGroup, ListGroupItem, Form, FormGroup, Label, Input, Button
+    NavLink, ListGroup, ListGroupItem, Form, FormGroup, Label, Input, Button, Alert
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faBuilding } from '@fortawesome/free-solid-svg-icons';
@@ -87,7 +87,7 @@ class Companies extends React.Component {
                     {companies.map(company =>
                         <ListGroupItem key={company._links.self.href}>
                             {company.code}
-                            <div className="small">{company.officialName}</div>
+                            <div className="small">{company.name}</div>
                             <a href={company._links.self.href}>Edit 2</a>
                         </ListGroupItem>
                     )}
@@ -102,8 +102,7 @@ class AddCompany extends React.Component {
 
     emptyCompany = {
         code: '',
-        officialName: '',
-        commonName: ''
+        name: '',
     };
 
     constructor(props){
@@ -150,18 +149,17 @@ class AddCompany extends React.Component {
         return (
             <Container>
                 <h3>Add Company</h3>
+                <Alert color="warning">
+                    This no longer works as I need to implement an owner selector.
+                </Alert>
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
                         <Label for="code">Code</Label>
                         <Input type="text" name="code" id="code" value={company.code || ''} onChange={this.handleChange}/>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="officialName">Official Name</Label>
-                        <Input type="text" name="officialName" id="officialName" value={company.officialName || ''} onChange={this.handleChange}/>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="commonName">Common Name</Label>
-                        <Input type="text" name="commonName" id="commonName" value={company.commonName || ''} onChange={this.handleChange}/>
+                        <Label for="name">Name</Label>
+                        <Input type="text" name="name" id="name" value={company.name || ''} onChange={this.handleChange}/>
                     </FormGroup>
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}
