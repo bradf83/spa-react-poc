@@ -12,7 +12,7 @@ const Home = () => {
             </h3>
             <p>To the React POC application utilizing React, React Router, Bootstrap and Spring Boot!</p>
         </Container>
-    )
+    );
 };
 
 export default Home
