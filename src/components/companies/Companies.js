@@ -21,20 +21,6 @@ const Companies = ({auth}) => {
         // Since the accessToken call above is its own useEffect, it may not be here yet.
         if(accessToken){
             //TODO: Probably want to have a catch on these promises
-            fetch("/companies", {headers: {"Authorization": "Bearer " + accessToken}})
-                .then((response) => {
-                    return response.json();
-                })
-                .then((json) => {
-                    setCompanies(json._embedded.companies);
-                });
-        }
-    }, [accessToken]);
-
-    const handleSearch = event => {
-        event.preventDefault();
-        if(accessToken){
-            //TODO: Probably want to have a catch on these promises
             fetch("/companies/search/findByCodeContainsOrNameContainsAllIgnoreCase?search=" + search, {headers: {"Authorization": "Bearer " + accessToken}})
                 .then((response) => {
                     return response.json();
@@ -43,11 +29,12 @@ const Companies = ({auth}) => {
                     setCompanies(json._embedded.companies);
                 });
         }
-    };
+    }, [accessToken, search]);
 
-    //TODO: This could be cleaned up or improved.
-    const handleChange = event => {
-        setSearch(event.target.value);
+    const handleSearchEnter = event => {
+      if(event.keyCode === 13){
+          setSearch(event.target.value);
+      }
     };
 
     return (
@@ -56,12 +43,12 @@ const Companies = ({auth}) => {
                 <FontAwesomeIcon icon={faBuilding} size="sm" className="mr-1"/>
                 Companies
             </h3>
-            <form onSubmit={handleSearch}>
-                <FormGroup>
-                    <input type="search" className="form-control" autoFocus onChange={handleChange}/>
-                    <FormText>Start typing to filter companies by code and name.</FormText>
-                </FormGroup>
-            </form>
+
+            <FormGroup>
+                <input type="search" className="form-control" autoFocus onKeyDown={handleSearchEnter} />
+                <FormText>Start typing to filter companies by code and name.</FormText>
+            </FormGroup>
+
             <ListGroup>
                 {companies && companies.map(company =>
                     <ListGroupItem className="list-group-item-action" key={company._links.self.href}>
