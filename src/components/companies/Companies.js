@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {Container, ListGroup, ListGroupItem} from "reactstrap";
+import {Container, ListGroup, ListGroupItem, FormGroup, FormText} from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBuilding, faPencilAlt} from "@fortawesome/free-solid-svg-icons";
 import {withAuth} from '@okta/okta-react';
@@ -16,6 +16,7 @@ import { useToken } from '../../hooks/useAuth';
 const Companies = ({auth}) => {
     const accessToken = useToken(auth);
     const [companies, setCompanies] = useState([]);
+    const [search, setSearch] = useState([]);
     useEffect(() => {
         // Since the accessToken call above is its own useEffect, it may not be here yet.
         if(accessToken){
@@ -30,15 +31,40 @@ const Companies = ({auth}) => {
         }
     }, [accessToken]);
 
+    const handleSearch = event => {
+        event.preventDefault();
+        if(accessToken){
+            //TODO: Probably want to have a catch on these promises
+            fetch("/companies/search/findByCodeContainsOrNameContainsAllIgnoreCase?search=" + search, {headers: {"Authorization": "Bearer " + accessToken}})
+                .then((response) => {
+                    return response.json();
+                })
+                .then((json) => {
+                    setCompanies(json._embedded.companies);
+                });
+        }
+    };
+
+    //TODO: This could be cleaned up or improved.
+    const handleChange = event => {
+        setSearch(event.target.value);
+    };
+
     return (
         <Container>
             <h3>
                 <FontAwesomeIcon icon={faBuilding} size="sm" className="mr-1"/>
                 Companies
             </h3>
-            <ListGroup className="list-group-flush">
+            <form onSubmit={handleSearch}>
+                <FormGroup>
+                    <input type="search" className="form-control" autoFocus onChange={handleChange}/>
+                    <FormText>Start typing to filter companies by code and name.</FormText>
+                </FormGroup>
+            </form>
+            <ListGroup>
                 {companies && companies.map(company =>
-                    <ListGroupItem key={company._links.self.href}>
+                    <ListGroupItem className="list-group-item-action" key={company._links.self.href}>
                         <a href={company._links.self.href} className="mr-1" title="Click to edit the company">
                             <FontAwesomeIcon icon={faPencilAlt} size="sm"/>
                         </a>{company.code}
@@ -46,6 +72,7 @@ const Companies = ({auth}) => {
                     </ListGroupItem>
                 )}
             </ListGroup>
+        {/*    TODO: If there are no companies display a message*/}
         </Container>
     );
 };

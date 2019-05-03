@@ -23,8 +23,9 @@ This project is me playing around.....again
 
 ### Things To Figure Out
 
-* Use hooks instead of classes
-* Auth with hooks [Check This Post](https://developer.okta.com/blog/2019/03/06/simple-user-authentication-in-react)
+* Cleaner on change
+* Cleaner use of the access token with hooks, feel like it can be better.
+* How to save search params (for example params for searching companies)
 
 ###  Libraries I am using
 
