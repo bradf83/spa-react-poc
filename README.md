@@ -53,7 +53,24 @@ This project is me playing around.....again
 
 * Traverson and traverson-hal
 * Formik
+* Suspense For Data Fetching (Minor Release Mid 2019)
   
 ### Helpful Links
 
 * https://stackoverflow.com/questions/48523371/how-to-customize-bootstrap-4-in-reactjs-app-with-reactstrap-dependency
+
+### Alternative Approaches
+
+1. Not sure I like how the companies list is using an effect to get the token.  It causes a few extra component renders.
+
+```
+// Need to add 'auth' to the useEffect dependency block
+// This should be wrapped in a try/catch for error handling
+// The async method can be defined inside or outside the useEffect call.  Wonder which is better or if it matters?
+const fetchData = async () => {
+    const response = await fetch("/companies/search/findByCodeContainsOrNameContainsAllIgnoreCase?search=" + search, {headers: {"Authorization": "Bearer " + await auth.getAccessToken()}});
+    const data = await response.json();
+    setCompanies(data._embedded.companies);
+};
+fetchData();
+```
