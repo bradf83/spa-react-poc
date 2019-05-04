@@ -19,7 +19,8 @@ This project is me playing around.....again
 
 * Customize React Strap
 * Edit, Delete a company
-* Beef up add company, error handling, forward on save...
+* Beef up add company, forward on save...
+* Improved error handling, inline errors.
 
 ### Things To Figure Out
 
