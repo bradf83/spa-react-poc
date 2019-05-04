@@ -9,16 +9,29 @@ class AddCompany extends React.Component {
     emptyCompany = {
         code: '',
         name: '',
+        owner: '',
     };
 
     constructor(props){
         super(props);
         this.state = {
             company: this.emptyCompany,
-            errors: []
+            errors: [],
+            owners: []
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    async componentDidMount() {
+        const token = await this.props.auth.getAccessToken();
+        try{
+            const response = await fetch("/owners", {headers: {"Authorization": "Bearer " + token}});
+            const body = await response.json();
+            this.setState({owners: body._embedded.owners});
+        } catch(error){
+            //TODO: What to do with error?
+        }
     }
 
     /**
@@ -65,8 +78,7 @@ class AddCompany extends React.Component {
     }
 
     render(){
-        const {company} = this.state;
-        const {errors} = this.state;
+        const {company, errors, owners} = this.state;
         return (
             <Container>
                 <h3>Add Company</h3>
@@ -91,6 +103,16 @@ class AddCompany extends React.Component {
                     <FormGroup>
                         <Label for="name">Name</Label>
                         <Input type="text" name="name" id="name" value={company.name || ''} onChange={this.handleChange}/>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="owner">Owner</Label>
+                        <Input type="select" name="owner" value={company.owner || ''} onChange={this.handleChange}>
+                            {owners && owners.map(({ firstName, _links}) => (
+                                <option key={_links.self.href} value={_links.self.href}>
+                                    {firstName}
+                                </option>
+                            ))}
+                        </Input>
                     </FormGroup>
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}
