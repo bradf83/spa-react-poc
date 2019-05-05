@@ -1,15 +1,40 @@
 // TODO Convert to a hook?
 import React from "react";
-import {Alert, Button, Container, Form, FormGroup, Input, Label, ListGroupItem} from "reactstrap";
-import {Link} from "react-router-dom";
+import {Alert, Button, Container, Form, FormGroup, Input, Label, FormFeedback} from "reactstrap";
+import {Link, withRouter} from "react-router-dom";
 import {withAuth} from '@okta/okta-react';
+
+// TODO: I think I will want an object that holds the entire form for the following reasons:
+// 1. Clearing errors before POST (incase there were errors from a previous attempt)
+// 2. Taking the state and building a POST body
+class FormControlState {
+    constructor(value = ''){
+        this.value = value;
+        this.errors = [];
+    }
+
+    isValid() {return this.errors.length === 0}
+
+    clearErrors() {this.errors = [];}
+
+    /**
+     * It does not look like Bootstrap 4 allows multiple FormFeedback under the input so need to combine multiple error
+     * messages into one.
+     * @returns {string}
+     */
+    buildErrorMessage(){
+        return this.errors.map(({message}) => message).join(' ');
+    }
+
+}
 
 class AddCompany extends React.Component {
 
+    // Initial State
     emptyCompany = {
-        code: '',
-        name: '',
-        owner: '',
+        code: new FormControlState(''),
+        name: new FormControlState(''),
+        owner: new FormControlState(''),
     };
 
     constructor(props){
@@ -28,7 +53,19 @@ class AddCompany extends React.Component {
         try{
             const response = await fetch("/owners", {headers: {"Authorization": "Bearer " + token}});
             const body = await response.json();
-            this.setState({owners: body._embedded.owners});
+            const owners = body._embedded.owners;
+
+            // TODO: If this is reused for edit this will need to be smarter.
+            // Set the owner select box to the first owner.
+            if(owners.length > 0){
+                let company = {...this.state.company};
+                company.owner.value = owners[0]._links.self.href;
+                this.setState({owners: owners, company: company});
+            } else {
+                this.setState({owners: owners});
+            }
+
+
         } catch(error){
             //TODO: What to do with error?
         }
@@ -43,14 +80,23 @@ class AddCompany extends React.Component {
         const value = target.value;
         const name = target.name;
         let company = {...this.state.company};
-        company[name] = value;
+        // TODO: I notice Ben surrounds his name attribute in quotes, I do not, which way is better?
+        company[name].value = value;
         this.setState({company});
     }
 
-    // TODO: Use React Router to push history and forward to the companies list page.  Example here: (https://developer.okta.com/blog/2018/07/19/simple-crud-react-and-spring-boot)
     async handleSubmit(event){
         event.preventDefault();
-        let company = {...this.state.company};
+        let formCompany = {...this.state.company};
+
+        //TODO: Need to clear errors before posting, ideally a form object would provide this behavior through a single method call.
+        formCompany.code.clearErrors();
+        formCompany.name.clearErrors();
+        formCompany.owner.clearErrors();
+
+        //TODO: A form object should provide a method toPostBody() or something
+        let company = {code: formCompany.code.value, name: formCompany.name.value, owner: formCompany.owner.value};
+
         const token = await this.props.auth.getAccessToken();
         try{
             const response = await fetch('/companies', {
@@ -65,11 +111,17 @@ class AddCompany extends React.Component {
 
             if(response.ok){
                 // Forward to list screen
-                console.log('process errors')
+                this.props.history.push('/companies');
             } else {
                 const body = await response.json();
+                // Place the errors into the FormControlState
+                // TODO: could there be errors that don't relate to a field?
                 // Props: entity, property, invalidValue, message
-                this.setState({errors: body.errors});
+                let formCompany = {...this.state.company};
+                body.errors.forEach(function(error){
+                    formCompany[error.property].errors.push(error);
+                });
+                this.setState({company: formCompany});
             }
         } catch(error){
             // An unexpected error occurred.
@@ -78,41 +130,43 @@ class AddCompany extends React.Component {
     }
 
     render(){
-        const {company, errors, owners} = this.state;
+        const {company, owners} = this.state;
+        const {code, name, owner} = company;
+
         return (
             <Container>
                 <h3>Add Company</h3>
                 <Alert color="warning">
-                    This no longer works as I need to implement an owner selector.  It displays errors now in a rudimentary form.
+                    This is a work in progress, on save it works (check network) or displays errors.  Does not clear the form on success though.
                 </Alert>
-                {errors.length > 0 &&
-                    <Alert color="danger">
-                        <ul>
-                            {errors.map(error =>
-                                <li key={error.entity + "" + error.property + "" + error.message}>{error.message}</li>
-                            )}
-                        </ul>
-                    </Alert>
-                }
 
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
                         <Label for="code">Code</Label>
-                        <Input type="text" name="code" id="code" value={company.code || ''} onChange={this.handleChange}/>
+                        <Input type="text" name="code" id="code" value={code.value} onChange={this.handleChange} invalid={!code.isValid()}/>
+                        {!code.isValid() && (
+                            <FormFeedback>{code.buildErrorMessage()}</FormFeedback>
+                        )}
                     </FormGroup>
                     <FormGroup>
                         <Label for="name">Name</Label>
-                        <Input type="text" name="name" id="name" value={company.name || ''} onChange={this.handleChange}/>
+                        <Input type="text" name="name" id="name" value={name.value} onChange={this.handleChange} invalid={!name.isValid()}/>
+                        {!name.isValid() && (
+                            <FormFeedback>{name.buildErrorMessage()}</FormFeedback>
+                        )}
                     </FormGroup>
                     <FormGroup>
                         <Label for="owner">Owner</Label>
-                        <Input type="select" name="owner" value={company.owner || ''} onChange={this.handleChange}>
+                        <Input type="select" name="owner" value={owner.value} onChange={this.handleChange} invalid={!owner.isValid()}>
                             {owners && owners.map(({ firstName, _links}) => (
                                 <option key={_links.self.href} value={_links.self.href}>
                                     {firstName}
                                 </option>
                             ))}
                         </Input>
+                        {!owner.isValid() && (
+                            <FormFeedback>{owner.buildErrorMessage()}</FormFeedback>
+                        )}
                     </FormGroup>
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}
@@ -124,4 +178,4 @@ class AddCompany extends React.Component {
     }
 }
 
-export default withAuth(AddCompany);
+export default withAuth(withRouter(AddCompany));
