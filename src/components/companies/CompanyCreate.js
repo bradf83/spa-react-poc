@@ -17,7 +17,7 @@ const FieldErrors = ({field, errors}) => {
             <FormFeedback>{message}</FormFeedback>
         )
     } else {
-        return '';
+        return null;
     }
 };
 
