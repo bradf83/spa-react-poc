@@ -30,7 +30,7 @@ class SiteNavigation extends React.Component {
                                     <NavLink href="/companies">Companies</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink href="/companies/add">Add Company</NavLink>
+                                    <NavLink href="/companies/create">Create Company</NavLink>
                                 </NavItem>
                             </Nav>
                         </Collapse>
