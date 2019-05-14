@@ -6,8 +6,7 @@ import './App.css';
 import SiteNavigation from './components/SiteNavigation';
 import Home from './components/Home';
 import Companies from './components/companies/Companies';
-import EditCompany from './components/companies/EditCompany';
-import CompanyCreate from './components/companies/CompanyCreate';
+import CompanyManage from './components/companies/CompanyManage';
 import {Container} from 'reactstrap';
 
 
@@ -20,8 +19,8 @@ const App = () => {
                 <Switch>
                     <Route exact path='/' component={Home}/>
                     <SecureRoute exact path="/companies" component={Companies}/>
-                    <SecureRoute path="/companies/create" component={CompanyCreate}/>
-                    <SecureRoute path="/companies/:id" component={EditCompany}/>
+                    <SecureRoute path="/companies/create" component={CompanyManage}/>
+                    <SecureRoute path="/companies/:id" component={CompanyManage}/>
                     <Route path='/implicit/callback' component={ImplicitCallback}/>
                     <Route render={() => {return <Container><h3>Not Found</h3></Container>}}/>
                 </Switch>

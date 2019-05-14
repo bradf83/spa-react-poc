@@ -3,6 +3,9 @@ import {Button, Container, Form, FormFeedback, FormGroup, Input, Label} from 're
 import { withAuth } from '@okta/okta-react';
 import {Link, withRouter} from "react-router-dom";
 
+//TODO: Trying to do a few things
+// Select the default relationship on load
+
 // Helpers that need to be extracted
 
 const hasFieldErrors = (field, errors) => {
@@ -29,7 +32,7 @@ const initialState = () => ({
 
 // Component
 
-const CompanyCreate = ({auth, history}) => {
+const CompanyManage = ({auth, history, match}) => {
     const [formState, setFormState] = useState(initialState());
     const [errors, setErrors] = useState([]);
 
@@ -41,24 +44,67 @@ const CompanyCreate = ({auth, history}) => {
                 const response = await fetch("/owners", {headers: {"Authorization": "Bearer " + token}});
                 const body = await response.json();
                 const retrievedOwners = body._embedded.owners;
-
-                // TODO: If this is reused for edit this will need to be smarter.
-                // Set the owner select box to the first owner.
-                if(retrievedOwners.length > 0 && formState.owner === ''){
-                    let newState = {...formState};
-                    newState.owner = retrievedOwners[0]._links.self.href;
-                    setFormState(newState);
-                    setOwners(retrievedOwners);
-
-                } else {
-                    setOwners(retrievedOwners);
-                }
+                setOwners(retrievedOwners);
             } catch(error){
                 //TODO: What to do with error?
             }
         };
         loadOwners();
-    }, [auth, formState]);
+    }, [auth]);
+
+    //TODO: Is this the right way to do this?  I think I need to understand that useCallback hook.
+    useEffect(() => {
+        if(owners.length > 0){
+            console.log(formState.owner);
+            const filtered = owners.filter(own => own._links.self.href === formState.owner);
+            if(filtered.length === 0){
+                let newState = {...formState};
+                newState.owner = owners[0]._links.self.href;
+                setFormState(newState);
+            }
+        }
+
+    }, [owners, formState]);
+
+    useEffect(() => {
+        // TODO: Not sure I like this pattern, but it seems to work.  Don't like that in this case there are two lookups
+        //  for the company data.
+        if(match.params.id){
+
+            const loadCompany = async () => {
+                const token = await auth.getAccessToken();
+                try{
+                    const response = await fetch("/companies/" + match.params.id ? match.params.id : '', {headers: {"Authorization": "Bearer " + token}});
+                    return await response.json();
+                } catch(error){
+                    //TODO: What to do with error?
+                }
+            };
+
+            const loadRelationship = async (ownerLink) => {
+                const token = await auth.getAccessToken();
+                try{
+                    const response = await fetch(ownerLink, {headers: {"Authorization": "Bearer " + token}});
+                    return await response.json();
+                } catch(error){
+                    //TODO: What to do with error?
+                }
+            };
+
+            const loadData = async () => {
+                const companyInfo = await loadCompany();
+                const ownerInfo = await loadRelationship(companyInfo._links.owner.href);
+                const newState = {
+                    code: companyInfo.code,
+                    name: companyInfo.name,
+                    owner: ownerInfo._links.self.href
+                };
+                setFormState(newState);
+            };
+
+            loadData();
+        }
+    }, [auth, match]);
 
     const handleSubmit = async event => {
         event.preventDefault();
@@ -66,8 +112,10 @@ const CompanyCreate = ({auth, history}) => {
 
         const token = await auth.getAccessToken();
         try{
-            const response = await fetch('/companies', {
-                method: 'POST',
+            // TODO: Clean this up, maybe a better way?
+            // TODO: Remember the API does not validate anything on update only CREATE right now
+            const response = await fetch('/companies/' + (match.params.id ? '/' + match.params.id : ''), {
+                method: match.params.id ? 'PATCH' : 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json',
@@ -130,4 +178,4 @@ const CompanyCreate = ({auth, history}) => {
     )
 };
 
-export default withAuth(withRouter(CompanyCreate));
+export default withAuth(withRouter(CompanyManage));
