@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {Container, ListGroup, ListGroupItem, FormGroup, FormText} from "reactstrap";
+import {Container, ListGroup, FormGroup, FormText} from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBuilding, faPencilAlt} from "@fortawesome/free-solid-svg-icons";
+import {faBuilding, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import {withAuth} from '@okta/okta-react';
 import { useToken } from '../../hooks/useAuth';
 
@@ -39,10 +39,18 @@ const Companies = ({auth}) => {
 
     return (
         <Container>
-            <h3>
-                <FontAwesomeIcon icon={faBuilding} size="sm" className="mr-1"/>
-                Companies
-            </h3>
+            <div className="align-items-center d-flex justify-content-between">
+                <h3>
+                    <FontAwesomeIcon icon={faBuilding} size="sm" className="mr-1"/>
+                    Companies
+                </h3>
+
+                <div className="btn-group">
+                    <a href="/companies/create">
+                        <FontAwesomeIcon icon={faPlusCircle} size="lg"/>
+                    </a>
+                </div>
+            </div>
 
             <FormGroup>
                 <input type="search" className="form-control" autoFocus onKeyDown={handleSearchEnter} />
@@ -51,12 +59,10 @@ const Companies = ({auth}) => {
 
             <ListGroup>
                 {companies && companies.map(company =>
-                    <ListGroupItem className="list-group-item-action" key={company._links.self.href}>
-                        <a href={company._links.self.href} className="mr-1" title="Click to edit the company">
-                            <FontAwesomeIcon icon={faPencilAlt} size="sm"/>
-                        </a>{company.code}
+                    <a href={company._links.self.href} className="list-group-item list-group-item-action" key={company._links.self.href}>
+                        {company.code}
                         <div className="small">{company.name}</div>
-                    </ListGroupItem>
+                    </a>
                 )}
             </ListGroup>
         {/*    TODO: If there are no companies display a message*/}

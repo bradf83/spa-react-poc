@@ -68,7 +68,7 @@ const CompanyManage = ({auth, history, match}) => {
 
     useEffect(() => {
         // TODO: Not sure I like this pattern, but it seems to work.  Don't like that in this case there are two lookups
-        //  for the company data.
+        //  for the company data.  Possibly use a projection instead to bring back the relevant data?
         if(match.params.id){
 
             const loadCompany = async () => {
