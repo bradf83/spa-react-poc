@@ -102,17 +102,17 @@ const CompanyCreate = ({auth, history}) => {
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label for="code">Code</Label>
-                    <Input type="text" name="code" id="code" value={formState.code.value} onChange={handleChange} invalid={hasFieldErrors("code", errors)}/>
+                    <Input type="text" name="code" id="code" value={formState.code} onChange={handleChange} invalid={hasFieldErrors("code", errors)}/>
                     <FieldErrors field="code" errors={errors}/>
                 </FormGroup>
                 <FormGroup>
                     <Label for="name">Name</Label>
-                    <Input type="text" name="name" id="name" value={formState.name.value} onChange={handleChange} invalid={hasFieldErrors("name", errors)}/>
+                    <Input type="text" name="name" id="name" value={formState.name} onChange={handleChange} invalid={hasFieldErrors("name", errors)}/>
                     <FieldErrors field="name" errors={errors}/>
                 </FormGroup>
                 <FormGroup>
                     <Label for="owner">Owner</Label>
-                    <Input type="select" name="owner" value={formState.owner.value} onChange={handleChange} invalid={hasFieldErrors("owner", errors)}>
+                    <Input type="select" name="owner" value={formState.owner} onChange={handleChange} invalid={hasFieldErrors("owner", errors)}>
                         {owners && owners.map(({ firstName, _links}) => (
                             <option key={_links.self.href} value={_links.self.href}>
                                 {firstName}
