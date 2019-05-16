@@ -1,4 +1,6 @@
-This project is me playing around.....again
+This project is me playing around.....again.  I am currently using a React front end UI with a backend Spring Boot API
+built using Spring Data REST.  The notes in this document should pertain mostly to the React portion of my messing around
+but when evaluating different things I may bleed over into the API side.
 
 ### Running
 
@@ -7,23 +9,21 @@ This project is me playing around.....again
 1. Navigate to localhost:3000
 1. Home (Index/Click on React POC) is public, company endpoints expect you to be logged in.
 
-#### Steps
+#### How I was built
 
-1. Created a new app using create-react-app app-name
-1. Removed all of the App.css code, gutted the App.js code and created basic HelloWorld
-1. Deleted the react logo 
-1. Created my POC app in App.js for now
-1. Some config is located in config.js
+1. Created a new app using the create-react-app and then gutted the default app and started from there.
+
+#### Examples
+I have added an examples section that is not protected by security this will allow me to mock out some ideas that I want
+to build with the full api.
 
 ### TODO
 
 * Customize React Strap
-* Edit, Delete a company
-* Convert Add Company to a hook!
+* Delete a company
 
 ### Things To Figure Out
 
-* Cleaner on change
 * Cleaner use of the access token with hooks, feel like it can be better.
 * How to save search params (for example params for searching companies)
 
@@ -61,7 +61,7 @@ This project is me playing around.....again
 
 ### Alternative Approaches
 
-1. Not sure I like how the companies list is using an effect to get the token.  It causes a few extra component renders.
+* Not sure I like how the companies list is using an effect to get the token.  It causes a few extra component renders.
 
 ```
 // Need to add 'auth' to the useEffect dependency block
@@ -74,3 +74,7 @@ const fetchData = async () => {
 };
 fetchData();
 ```
+
+* Right now when loading a company on edit in the CompanyManage I do two calls to hydrate the component it would be nice
+if I could do a single call to hydrate the component.  One thing we could do is create a projection in the API that allows
+us to pass back all the information we need.
