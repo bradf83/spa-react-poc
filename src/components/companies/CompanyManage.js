@@ -2,9 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Button, Container, Form, FormFeedback, FormGroup, Input, Label} from 'reactstrap';
 import { withAuth } from '@okta/okta-react';
 import {Link, withRouter} from "react-router-dom";
-
-//TODO: Trying to do a few things
-// Select the default relationship on load
+import API from "../../api";
 
 // Helpers that need to be extracted
 
@@ -38,21 +36,20 @@ const CompanyManage = ({auth, history, match}) => {
 
     const [owners, setOwners] = useState([]);
     useEffect(() => {
-        const loadOwners = async () => {
-            const token = await auth.getAccessToken();
+        const {loadOwners} = API(auth);
+        const loadData = async () => {
             try{
-                const response = await fetch("/owners", {headers: {"Authorization": "Bearer " + token}});
+                const response = await loadOwners();
                 const body = await response.json();
-                const retrievedOwners = body._embedded.owners;
-                setOwners(retrievedOwners);
+                setOwners(body._embedded.owners);
             } catch(error){
                 //TODO: What to do with error?
             }
         };
-        loadOwners();
+        loadData();
     }, [auth]);
 
-    //TODO: Is this the right way to do this?  I think I need to understand that useCallback hook.
+    //TODO: Is this the right way to do this?  Could useCallback help?.
     useEffect(() => {
         if(owners.length > 0){
             const filtered = owners.filter(own => own._links.self.href === formState.owner);
@@ -68,10 +65,10 @@ const CompanyManage = ({auth, history, match}) => {
 
     useEffect(() => {
         if(match.params.id){
-            const loadCompany = async () => {
-                const token = await auth.getAccessToken();
+            const {loadCompany} = API(auth);
+            const loadData = async () => {
                 try{
-                    const response = await fetch("/companies/" + match.params.id ? match.params.id : '', {headers: {"Authorization": "Bearer " + token}});
+                    const response = await loadCompany(match.params.id);
                     const body = await response.json();
                     const newState = {
                         code: body.code,
@@ -83,7 +80,7 @@ const CompanyManage = ({auth, history, match}) => {
                     //TODO: What to do with error?
                 }
             };
-            loadCompany();
+            loadData();
         }
     }, [auth, match]);
 
@@ -91,18 +88,9 @@ const CompanyManage = ({auth, history, match}) => {
         event.preventDefault();
         setErrors([]);
 
-        const token = await auth.getAccessToken();
+        const {saveCompany} = API(auth);
         try{
-            // TODO: Clean this up, maybe a better way?
-            const response = await fetch('/companies/' + (match.params.id ? '/' + match.params.id : ''), {
-                method: match.params.id ? 'PATCH' : 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formState)
-            });
+            const response = await saveCompany(formState, match.params.id);
 
             if(response.ok){
                 // Forward to list screen

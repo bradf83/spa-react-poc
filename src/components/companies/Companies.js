@@ -4,32 +4,26 @@ import {Container, ListGroup, FormGroup, FormText} from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBuilding, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import {withAuth} from '@okta/okta-react';
-import { useToken } from '../../hooks/useAuth';
+import API from "../../api";
 
-/**
- * This is a protected component class that retrieves companies from the API and displays them in a list
- *
- * The if(accessToken) is needed for the following reason.  1st render useToken and useEffect called, useToken returns
- * and updates state which fires a second render and this time the access token is there so fires the fetch and updates
- * state
- */
 const Companies = ({auth}) => {
-    const accessToken = useToken(auth);
     const [companies, setCompanies] = useState([]);
     const [search, setSearch] = useState([]);
+
     useEffect(() => {
-        // Since the accessToken call above is its own useEffect, it may not be here yet.
-        if(accessToken){
-            //TODO: Probably want to have a catch on these promises
-            fetch("/companies/search/findByCodeContainsOrNameContainsAllIgnoreCase?search=" + search, {headers: {"Authorization": "Bearer " + accessToken}})
-                .then((response) => {
-                    return response.json();
-                })
-                .then((json) => {
-                    setCompanies(json._embedded.companies);
-                });
-        }
-    }, [accessToken, search]);
+        //TODO: Not sure I like this in here as I would need something like it in every useEffect
+        const {searchCompanies} = API(auth);
+        const loadData = async () => {
+            try{
+                const response = await searchCompanies(search);
+                const body = await response.json();
+                setCompanies(body._embedded.companies)
+            } catch(error){
+                //TODO: What to do with error?
+            }
+        };
+        loadData();
+    }, [search, auth]);
 
     const handleSearchEnter = event => {
       if(event.keyCode === 13){
