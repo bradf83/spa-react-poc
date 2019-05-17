@@ -78,3 +78,5 @@ fetchData();
 * Right now when loading a company on edit in the CompanyManage I do two calls to hydrate the component it would be nice
 if I could do a single call to hydrate the component.  One thing we could do is create a projection in the API that allows
 us to pass back all the information we need.
+    * I came across another way to accommodate this goal on the Spring Boot API side.  Create a resource processor to give us
+    the additional information that we need.

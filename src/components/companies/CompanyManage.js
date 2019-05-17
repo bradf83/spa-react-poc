@@ -55,8 +55,8 @@ const CompanyManage = ({auth, history, match}) => {
     //TODO: Is this the right way to do this?  I think I need to understand that useCallback hook.
     useEffect(() => {
         if(owners.length > 0){
-            console.log(formState.owner);
             const filtered = owners.filter(own => own._links.self.href === formState.owner);
+            // TODO: What should we do if the value is not found?  Clear the value?  Set it to first element?
             if(filtered.length === 0){
                 let newState = {...formState};
                 newState.owner = owners[0]._links.self.href;
@@ -67,42 +67,23 @@ const CompanyManage = ({auth, history, match}) => {
     }, [owners, formState]);
 
     useEffect(() => {
-        // TODO: Not sure I like this pattern, but it seems to work.  Don't like that in this case there are two lookups
-        //  for the company data.  Possibly use a projection instead to bring back the relevant data?
         if(match.params.id){
-
             const loadCompany = async () => {
                 const token = await auth.getAccessToken();
                 try{
                     const response = await fetch("/companies/" + match.params.id ? match.params.id : '', {headers: {"Authorization": "Bearer " + token}});
-                    return await response.json();
+                    const body = await response.json();
+                    const newState = {
+                        code: body.code,
+                        name: body.name,
+                        owner: body._links.ownerLink.href
+                    };
+                    setFormState(newState);
                 } catch(error){
                     //TODO: What to do with error?
                 }
             };
-
-            const loadRelationship = async (ownerLink) => {
-                const token = await auth.getAccessToken();
-                try{
-                    const response = await fetch(ownerLink, {headers: {"Authorization": "Bearer " + token}});
-                    return await response.json();
-                } catch(error){
-                    //TODO: What to do with error?
-                }
-            };
-
-            const loadData = async () => {
-                const companyInfo = await loadCompany();
-                const ownerInfo = await loadRelationship(companyInfo._links.owner.href);
-                const newState = {
-                    code: companyInfo.code,
-                    name: companyInfo.name,
-                    owner: ownerInfo._links.self.href
-                };
-                setFormState(newState);
-            };
-
-            loadData();
+            loadCompany();
         }
     }, [auth, match]);
 
@@ -113,7 +94,6 @@ const CompanyManage = ({auth, history, match}) => {
         const token = await auth.getAccessToken();
         try{
             // TODO: Clean this up, maybe a better way?
-            // TODO: Remember the API does not validate anything on update only CREATE right now
             const response = await fetch('/companies/' + (match.params.id ? '/' + match.params.id : ''), {
                 method: match.params.id ? 'PATCH' : 'POST',
                 headers: {
