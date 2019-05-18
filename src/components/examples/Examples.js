@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ListGroup from "reactstrap/es/ListGroup";
-import {Container} from "reactstrap";
-import {Route, Switch, NavLink, Link} from 'react-router-dom'
+import {Button, Container, Form, FormFeedback, FormGroup, Input, Label} from "reactstrap";
+import {Route, Switch, NavLink, Link, withRouter} from 'react-router-dom'
 import ListGroupItem from "reactstrap/es/ListGroupItem";
 
 // TODO: I made my first example inline, make this the landing page with links to individual examples, extract this current one out.
@@ -24,7 +24,7 @@ const Examples = () => {
                         <Route path="/examples/owner" component={Owner}/>
                         <Route path="/examples/taxes" component={Taxes}/>
                         <Route path="/examples/products" exact component={Products}/>
-                        <Route path="/examples/products/create" component={ProductCreate}/>
+                        <Route path="/examples/products/create" component={withRouter(ProductCreate)}/>
                     </Switch>
                 </div>
             </div>
@@ -32,7 +32,7 @@ const Examples = () => {
     )
 };
 
-// Used for this example so left in this file.
+// Summary component
 
 const Summary = () => {
     return(
@@ -56,6 +56,8 @@ const Summary = () => {
         </div>
     )
 };
+
+// Owner Component
 
 const Owner = () => {
     return (
@@ -117,6 +119,8 @@ const Owner = () => {
     )
 };
 
+// Taxes Component
+
 const Taxes = () => {
     return (
         <div>
@@ -129,6 +133,8 @@ const Taxes = () => {
         </div>
     )
 };
+
+// Product Entry Component (Used in product list)
 
 const ProductEntry = (props) => {
     return (
@@ -143,6 +149,8 @@ const ProductEntry = (props) => {
     )
 };
 
+// Product List Component
+
 const Products = () => {
 
     const fakeProductList = [
@@ -152,7 +160,8 @@ const Products = () => {
         {name: 'Nintendo', addedWhen: "15 years ago", info: "The classic Nintendo Entertainment System", addInfo: "Comes with Mario Bros and two controllers."},
     ];
 
-    const productList = fakeProductList.map(product => <ProductEntry {...product} />);
+    // Yes I am using the name as as key and its distinct in this example but would not normally be used as the key.
+    const productList = fakeProductList.map(product => <ProductEntry key={product.name} {...product} />);
 
     return (
         <div>
@@ -167,23 +176,154 @@ const Products = () => {
     )
 };
 
-const ProductCreate = () => {
+// Create Product Component
+
+const ProductCreate = ({history}) => {
+
+    const hasFieldErrors = (field, errors) => {
+        return errors.filter(error => error.property === field).length > 0
+    };
+
+    const FieldErrors = ({field, errors}) => {
+        const relevantErrors = errors.filter(error => error.property === field);
+        if(relevantErrors.length > 0){
+            const message = relevantErrors.map(({message}) => message).join(' ');
+            return (
+                <FormFeedback>{message}</FormFeedback>
+            )
+        } else {
+            return null;
+        }
+    };
+
+    const GlobalErrors = ({errors}) => {
+        const relevantErrors = errors.filter(error => error.property === undefined || error.property === '');
+        if(relevantErrors.length > 0){
+            const message = relevantErrors.map(({message}) => <li>{message}</li>);
+            return (
+                <div className="alert alert-danger">
+                    <h6>Errors:</h6>
+                    <ul>
+                        {message}
+                    </ul>
+                </div>
+            )
+        } else {
+            return null;
+        }
+    };
+
+    const initialState = () => ({
+        name: '',
+        addedWhen: '',
+        info: '',
+        addInfo: ''
+    });
+
+    const [formState, setFormState] = useState(initialState());
+    const [simulate, setSimulate] = useState('Submit');
+    const [errors, setErrors] = useState([]);
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        // Clear errors on submit;
+        setErrors([]);
+
+        switch(simulate){
+            case 'Submit':
+                alert('You are submitting the following information: ' + JSON.stringify(formState));
+                history.push('/examples/products');
+                break;
+            case 'FormErrors':
+                const fieldErrors = [
+                    {
+                        property: 'name',
+                        message: 'There is something wrong with name!',
+                    },
+                    {
+                        property: 'info',
+                        message: 'Info has something wrong.'
+                    }
+                ];
+                setErrors(fieldErrors);
+                break;
+            case 'GlobalErrors':
+                const globalErrors = [
+                    {
+                        message: 'A global error has occurred.',
+                    },
+                    {
+                        property: '',
+                        message: 'A second global error has occurred.'
+                    }
+                ];
+                setErrors(globalErrors);
+                break;
+            default:
+                alert('Something went wrong.');
+        }
+    };
+
+    const handleChange = ({target}) => {
+        let newState = {...formState};
+        newState[target.name] = target.value;
+        setFormState(newState);
+    };
+
+    const handleSimulateChange = ({target}) => {
+        setSimulate(target.value);
+    };
+
     return (
         <div>
-            <div className="alert alert-info">
-                <h6>Things To Do:</h6>
-                <ul>
-                    <li>Create a form</li>
-                    <li>Create some buttons
-                        <ul>
-                            <li>Submit</li>
-                            <li>Submit with Model Errors</li>
-                            <li>Submit with Global Errors</li>
-                            <li>Cancel</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+            <h3>Create</h3>
+            <GlobalErrors errors={errors} />
+            <Form onSubmit={handleSubmit}>
+                <FormGroup>
+                    <Label for="name">Name</Label>
+                    <Input type="text" name="name" id="name" value={formState.name} onChange={handleChange} invalid={hasFieldErrors("name", errors)}/>
+                    <FieldErrors field="name" errors={errors}/>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="addedWhen">Added When?</Label>
+                    <Input type="text" name="addedWhen" id="addedWhen" value={formState.addedWhen} onChange={handleChange} invalid={hasFieldErrors("addedWhen", errors)}/>
+                    <FieldErrors field="addedWhen" errors={errors}/>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="info">Info</Label>
+                    <Input type="text" name="info" id="info" value={formState.info} onChange={handleChange} invalid={hasFieldErrors("info", errors)}/>
+                    <FieldErrors field="info" errors={errors}/>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="addInfo">Additional Info</Label>
+                    <Input type="text" name="addInfo" id="addInfo" value={formState.addInfo} onChange={handleChange} invalid={hasFieldErrors("addInfo", errors)}/>
+                    <FieldErrors field="addInfo" errors={errors}/>
+                </FormGroup>
+                <FormGroup>
+                    <h6>Submit Behaviour (Simulation)</h6>
+                    {/* TODO: Could create a component for this radio box */}
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="simulate" id="js-simulate-submit" checked={simulate === 'Submit'} onChange={handleSimulateChange}
+                               value="Submit"/>
+                            <label className="form-check-label" htmlFor="js-simulate-submit" title='Simulate submitting the form and it being successful.'>Submit</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="simulate" id="js-simulate-form-errors" checked={simulate === 'FormErrors'} onChange={handleSimulateChange}
+                               value="FormErrors" />
+                            <label className="form-check-label" htmlFor="js-simulate-form-errors" title='Simulate submitting the form and there being form errors.'>Form Errors</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="simulate" id="js-simulate-global-errors" checked={simulate === 'GlobalErrors'} onChange={handleSimulateChange}
+                               value="GlobalErrors" />
+                            <label className="form-check-label" htmlFor="js-simulate-global-errors" title='Simulate submitting the form and there being global errors.'>Global Errors</label>
+                    </div>
+                </FormGroup>
+                <FormGroup>
+                    <Button className="mr-2" color="primary" type="submit">Save</Button>
+                    <Button color="secondary" tag={Link} to="/examples/products">Cancel</Button>
+                </FormGroup>
+            </Form>
         </div>
     )
 };
