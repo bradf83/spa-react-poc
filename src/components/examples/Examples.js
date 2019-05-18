@@ -15,7 +15,10 @@ const Examples = () => {
                         <NavLink className="list-group-item list-group-item-action" to="/examples/summary">Summary</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/owner">Owner</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/taxes">Taxes</NavLink>
-                        <NavLink className="list-group-item list-group-item-action" to="/examples/products">Products</NavLink>
+                        <NavLink className="list-group-item list-group-item-action d-flex justify-content-between align-items-center" to="/examples/products">
+                            Products
+                            <span className="badge badge-primary badge-pill">4</span>
+                        </NavLink>
                     </ListGroup>
                 </div>
                 <div className="col-sm-9">
@@ -143,8 +146,18 @@ const ProductEntry = (props) => {
                 <h5 className="mb-1">{props.name}</h5>
                 <small>{props.addedWhen}</small>
             </div>
-            <p className="mb-1">{props.info}</p>
-            <small>{props.addInfo}</small>
+            <div className="d-flex w-100 justify-content-between align-items-end">
+                <div>
+                    <p className="mb-1">{props.info}</p>
+                    <small>{props.addInfo}</small>
+                </div>
+                <div>
+                    <a className="text-danger" href="javascript:void(0);" onClick={() => {alert('Implement Delete Here.')}}>
+                        Delete
+                    </a>
+                </div>
+            </div>
+
         </ListGroupItem>
     )
 };
