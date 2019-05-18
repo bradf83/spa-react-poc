@@ -62,57 +62,57 @@ const Summary = () => {
 const Owner = () => {
     return (
         <div>
-            <div className="d-flex w-100 justify-content-between mb-2">
-                <div className="flex-fill mr-2">
-                    <div className="d-flex justify-content-between w-100">
-                        <div>
-                            <h6>Name</h6>
-                            <p>Some Owner</p>
-                        </div>
-                        <div>
-                            <h6>Email</h6>
-                            <p>some.owner@example.com</p>
-                        </div>
-                        <div>
-                            <h6>Phone</h6>
-                            <p>555-555-5555</p>
+            <div className="card mb-3">
+                <div className="row no-gutters">
+                    <div className="col-md-4">
+                        <svg className="card-image" width="100%" height="100%">
+                            <rect width="100%" height="100%" fill="grey"/>
+                            <text x="25%" y="50%" fill="white" dy=".3em">Owner Picture</text>
+                        </svg>
+                        {/*<img src="..." className="card-img" alt="..."/>*/}
+                    </div>
+                    <div className="col-md-8">
+                        <div className="card-body">
+                            <h5 className="card-title">Some Owner</h5>
+                            <div className="d-flex justify-content-between">
+                                <div>
+                                    <h6>Email</h6>
+                                    <p>some.owner@example.com</p>
+                                </div>
+                                <div>
+                                    <h6>Phone</h6>
+                                    <p>555-555-5555</p>
+                                </div>
+                            </div>
+                            <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias consectetur culpa excepturi laboriosam libero nisi officia repellendus saepe</p>
                         </div>
                     </div>
-                    <div>
-                        <h6>Comments</h6>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias consectetur culpa excepturi laboriosam libero nisi officia repellendus saepe suscipit veniam! Beatae eligendi ipsum molestias nemo nesciunt placeat praesentium quasi rerum!</p>
-                    </div>
-                </div>
-
-                <div>
-                    <svg className="rounded mx-auto d-block" width="250" height="250">
-                        <rect width="100%" height="100%" fill="grey"/>
-                        <text x="25%" y="50%" fill="white" dy=".3em">Owner Picture</text>
-                    </svg>
                 </div>
             </div>
+            <div className="card">
+                <div className="card-body">
 
-            <div>
-                <h6>Biography</h6>
-                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aut commodi fugit modi nam placeat
-                    provident sapiente similique, sunt totam! Architecto libero obcaecati optio ratione. Beatae cumque
-                    quidem reiciendis rerum?
-                </div>
-                <div>Accusamus aperiam aspernatur blanditiis deserunt dolorem doloribus enim eum eveniet ipsa ipsam,
-                    laudantium molestias nemo nobis optio temporibus ut voluptatum? Dicta doloremque maxime nulla
-                    repellat! Esse inventore numquam rerum temporibus!
-                </div>
-                <div>Cum dignissimos ea ex facere iure iusto, laborum nostrum nulla, numquam quam quidem similique
-                    veritatis! Adipisci consequuntur fuga minima porro quibusdam quod voluptatum! Illo magni maiores
-                    odit quidem similique? Assumenda.
-                </div>
-                <div>Doloremque doloribus esse iure odio optio? Aut commodi delectus error harum labore magni maxime
-                    mollitia nemo, nisi officiis, omnis pariatur perferendis placeat possimus quia quis quo repellendus
-                    sed tenetur veritatis.
-                </div>
-                <div>Aspernatur aut corporis culpa eveniet, explicabo, incidunt ipsum maiores placeat porro quibusdam
-                    quod recusandae reiciendis. Cum dolore iusto sit. Amet deserunt, ipsum maxime nobis numquam quae qui
-                    sequi voluptatem. Unde?
+                    <h6>Biography</h6>
+                    <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aut commodi fugit modi nam placeat
+                        provident sapiente similique, sunt totam! Architecto libero obcaecati optio ratione. Beatae cumque
+                        quidem reiciendis rerum?
+                    </div>
+                    <div>Accusamus aperiam aspernatur blanditiis deserunt dolorem doloribus enim eum eveniet ipsa ipsam,
+                        laudantium molestias nemo nobis optio temporibus ut voluptatum? Dicta doloremque maxime nulla
+                        repellat! Esse inventore numquam rerum temporibus!
+                    </div>
+                    <div>Cum dignissimos ea ex facere iure iusto, laborum nostrum nulla, numquam quam quidem similique
+                        veritatis! Adipisci consequuntur fuga minima porro quibusdam quod voluptatum! Illo magni maiores
+                        odit quidem similique? Assumenda.
+                    </div>
+                    <div>Doloremque doloribus esse iure odio optio? Aut commodi delectus error harum labore magni maxime
+                        mollitia nemo, nisi officiis, omnis pariatur perferendis placeat possimus quia quis quo repellendus
+                        sed tenetur veritatis.
+                    </div>
+                    <div>Aspernatur aut corporis culpa eveniet, explicabo, incidunt ipsum maiores placeat porro quibusdam
+                        quod recusandae reiciendis. Cum dolore iusto sit. Amet deserunt, ipsum maxime nobis numquam quae qui
+                        sequi voluptatem. Unde?
+                    </div>
                 </div>
             </div>
         </div>
