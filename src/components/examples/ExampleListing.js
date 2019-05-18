@@ -43,7 +43,8 @@ const ExampleList = () => {
         {title: 'Profile Example', location: '/examples/owner', description: 'A profile example that needs a lot of work!'},
     ];
 
-    const exampleCards = examples.map(example => <ExampleCard {...example} />);
+    // Using the title as the key here, would use a better key if this was not an example.
+    const exampleCards = examples.map(example => <ExampleCard key={example.title} {...example} />);
     return (
         <Container>
             <div className="alert alert-info">

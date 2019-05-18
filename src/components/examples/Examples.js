@@ -152,9 +152,9 @@ const ProductEntry = (props) => {
                     <small>{props.addInfo}</small>
                 </div>
                 <div>
-                    <a className="text-danger" href="javascript:void(0);" onClick={() => {alert('Implement Delete Here.')}}>
+                    <button className="btn btn-link text-danger p-0" onClick={() => {alert('Implement Delete Here.')}}>
                         Delete
-                    </a>
+                    </button>
                 </div>
             </div>
 
@@ -212,7 +212,8 @@ const ProductCreate = ({history}) => {
     const GlobalErrors = ({errors}) => {
         const relevantErrors = errors.filter(error => error.property === undefined || error.property === '');
         if(relevantErrors.length > 0){
-            const message = relevantErrors.map(({message}) => <li>{message}</li>);
+            // Using the message as the key just for this, use a valid key if doing this for real.
+            const message = relevantErrors.map(({message}) => <li key={message}>{message}</li>);
             return (
                 <div className="alert alert-danger">
                     <h6>Errors:</h6>
