@@ -19,7 +19,7 @@ class SiteNavigation extends React.Component {
 
     render() {
         return (
-            <div className="mb-1">
+            <div className="mb-2">
                 <Navbar color="light" light expand="md">
                     <Container>
                         <NavbarBrand href="/">React POC</NavbarBrand>
