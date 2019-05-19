@@ -34,6 +34,25 @@ to build with the full api.
 * Okta
 * Reactstrap
 
+### Customize Reactstrap Bootstrap
+
+* Install node-sass ```yarn add node-sass```
+* Create a styles directory in your src directory
+* Create a custom.scss similar to the following.  Note the custom styling is above the bootstrap import, refer to Bootstraps
+documentation for more information.  Yes you could also create another file for custom styles and import it before Bootstrap
+```
+$theme-colors: (
+        "primary": #ffb800
+);
+
+$btn-border-radius: 3000px;
+@import "~bootstrap/scss/bootstrap";
+```
+* Make sure to import this file at your entry point (index.js)
+```
+import './styles/custom.scss';
+```
+
 ### Commands I need to get used to
 
 * npm start / yarn start
