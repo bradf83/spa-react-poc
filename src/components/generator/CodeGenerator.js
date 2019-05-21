@@ -9,11 +9,15 @@ import FormText from "reactstrap/es/FormText";
 // Auditable
 
 const CodeGenerator = () => {
-    const [model, setModel] = useState("");
-    const [modelPlural, setModelPlural] = useState("");
+    //TODO: Remember to blank out default data.
+    const [model, setModel] = useState("Company");
+    const [modelPlural, setModelPlural] = useState("companies");
     const [modelForm, setModelForm] = useState({});
-    const [formState, setFormState] = useState({});
-    const [fields, setFields] = useState([]);
+    const [formState, setFormState] = useState({type: 'BigDecimal'});
+    const [fields, setFields] = useState([
+        {fieldName: 'fieldOne', type: 'int'},
+        {fieldName: 'fieldTwo', type: 'String'}
+        ]);
     const [createTable, setCreateTable] = useState("");
     const [createModel, setCreateModel] = useState("");
     const [createProcessor, setCreateProcessor] = useState("");
@@ -127,8 +131,9 @@ const CodeGenerator = () => {
         <Container>
             <h3>Code Generator</h3>
             <div className="alert alert-info">
-                This is a work in progress. This will be a code generator for a common pattern I use on my Spring Boot
+                <p>This is a work in progress. This will be a code generator for a common pattern I use on my Spring Boot
                 API side.  This is being hacked together really quick, yes this could be built better and more modular.
+                </p>
             </div>
         {/*  -- Left To Generate  */}
 
@@ -160,7 +165,16 @@ const CodeGenerator = () => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="type">Type</Label>
-                            <Input type="text" name="type" id="type" onChange={handleChange} placeholder="Type"/>
+                            <Input type="select" name="type" id="type" onChange={handleChange}>
+                                <option value="BigDecimal">Big Decimal</option>
+                                <option value="boolean">boolean</option>
+                                <option value="Boolean">Boolean</option>
+                                <option value="int">int</option>
+                                <option value="Integer">Integer</option>
+                                <option value="long">long</option>
+                                <option value="Long">Long</option>
+                                <option value="String">String</option>
+                            </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="nullable">Nullable?</Label>
