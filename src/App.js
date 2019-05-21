@@ -10,6 +10,7 @@ import CompanyManage from './components/companies/CompanyManage';
 import Examples from './components/examples/Examples';
 import {Container} from 'reactstrap';
 import ExampleListing from "./components/examples/ExampleListing";
+import CodeGenerator from "./components/generator/CodeGenerator";
 
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
                     <SecureRoute path="/companies/:id" component={CompanyManage}/>
                     <Route path='/examples' component={Examples}/>
                     <Route path='/exampleList' component={ExampleListing}/>
+                    <Route path='/codeGenerator' component={CodeGenerator}/>
                     <Route path='/implicit/callback' component={ImplicitCallback}/>
                     <Route render={() => {return <Container><h3>Not Found</h3></Container>}}/>
                 </Switch>

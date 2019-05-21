@@ -32,6 +32,9 @@ class SiteNavigation extends React.Component {
                                 <NavItem>
                                     <NavLink href="/exampleList">Examples</NavLink>
                                 </NavItem>
+                                <NavItem>
+                                    <NavLink href="/codeGenerator">Code Generator</NavLink>
+                                </NavItem>
                             </Nav>
                         </Collapse>
                     </Container>
