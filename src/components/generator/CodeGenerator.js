@@ -13,10 +13,10 @@ const CodeGenerator = () => {
     const [model, setModel] = useState("Company");
     const [modelPlural, setModelPlural] = useState("companies");
     const [modelForm, setModelForm] = useState({});
-    const [formState, setFormState] = useState({type: 'BigDecimal'});
+    const [formState, setFormState] = useState({type: 'BigDecimal', nullable: 'true'});
     const [fields, setFields] = useState([
-        {fieldName: 'fieldOne', type: 'int'},
-        {fieldName: 'fieldTwo', type: 'String'}
+        {fieldName: 'fieldOne', type: 'int', nullable: 'true'},
+        {fieldName: 'fieldTwo', type: 'String', nullable: 'true'}
         ]);
     const [createTable, setCreateTable] = useState("");
     const [createModel, setCreateModel] = useState("");
@@ -94,18 +94,46 @@ const CodeGenerator = () => {
     };
 
     const generateModel = () => {
+
+        let modelCode = '';
+
+        modelCode += '@Entity\n';
+        modelCode += '@NoArgsConstructor\n';
+        modelCode += '@Getter\n';
+        modelCode += '@Setter\n';
+        modelCode += 'public class ' + model + ' extends CommonProperties {\n';
+        fields.forEach((field, index) => {
+            modelCode += '\tprivate ' + field.type + ' ' + field.fieldName + ';\n';
+        });
+        modelCode += '}';
+        setCreateModel(modelCode);
+
         // Imports
         // Annotations (Entity, Lombok)
         // Class Def (Extends)
         // Id Field Default
         // Fields
         // Relationships
-        setCreateModel("A");
     };
 
     const generateProcessors = () => {
+        let processor = '';
+
+        processor += '@RequiredArgsConstructor\n';
+        processor += '@Component\n';
+        processor += 'public class ' + model + 'Processor implements ResourceProcessor<Resource<' + model + '>> {\n';
+        processor += '\tprivate final RepositoryEntityLinks repositoryEntityLinks;';
+        processor += '\n\n';
+        processor += '\t@Override\n';
+        processor += '\tpublic Resource<' + model + '> process(Resource<' + model + '> resource) {\n';
+        //TODO: Add links here
+        //         companyResource.add(repositoryEntityLinks.linkForSingleResource(OwnerRepository.class, companyResource.getContent().getOwner().getId()).withRel("ownerLink"));
+        processor += '\t\treturn resource;\n';
+        processor += '\t}\n';
+        processor += '}';
+
         // Additional links for belongsTo
-        setCreateProcessor("B");
+        setCreateProcessor(processor);
     };
 
     const generateRepository = () => {
@@ -178,7 +206,10 @@ const CodeGenerator = () => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="nullable">Nullable?</Label>
-                            <Input type="text" name="nullable" id="nullable" onChange={handleChange} placeholder="Nullable?"/>
+                            <Input type="select" name="nullable" id="nullable" onChange={handleChange}>
+                                <option value="true">True</option>
+                                <option value="false">False</option>
+                            </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="default">Default</Label>
