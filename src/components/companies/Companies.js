@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {Container, ListGroup, FormGroup, FormText} from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBuilding, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+import {faBuilding, faFileExcel, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {withAuth} from '@okta/okta-react';
 import API from "../../api";
 
@@ -31,6 +31,15 @@ const Companies = ({auth}) => {
       }
     };
 
+    const handleDownloadToExcel = () => {
+        const {downloadCompaniesExcel} = API(auth);
+        try{
+            downloadCompaniesExcel();
+        } catch (error) {
+            // TODO: Handle error?
+        }
+    };
+
     return (
         <Container>
             <div className="align-items-center d-flex justify-content-between">
@@ -39,9 +48,12 @@ const Companies = ({auth}) => {
                     Companies
                 </h3>
 
-                <div className="btn-group">
-                    <a href="/companies/create">
-                        <FontAwesomeIcon icon={faPlusCircle} size="lg"/>
+                <div className="btn-group btn-group-sm">
+                    <button type="button" className="btn btn-secondary" onClick={handleDownloadToExcel}>
+                        <FontAwesomeIcon icon={faFileExcel}/>
+                    </button>
+                    <a className="btn btn-primary" href="/companies/create">
+                        <FontAwesomeIcon icon={faPlus}/>
                     </a>
                 </div>
             </div>

@@ -34,11 +34,39 @@ const API = auth => {
         });
     };
 
+    /**
+     * Downloads an excel file from our API server.  This is a bit ugly but seems to work.  Based on the responses in this
+     * stack overflow: https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
+     * I would be open to a better cleaner way.
+     * @returns {Promise<void>}
+     */
+    const downloadCompaniesExcel = async () => {
+        //TODO: This needs to be better
+        const token = await auth.getAccessToken();
+        const requestConfig = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        fetch('/companies/excelDownload', requestConfig).then(response => response.blob())
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "company_listing.xlsx";
+                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                a.click();
+                a.remove();  //afterwards we remove the element again
+                window.URL.revokeObjectURL(url);
+            });
+    };
+
     return {
         searchCompanies,
         loadCompany,
         loadOwners,
-        saveCompany
+        saveCompany,
+        downloadCompaniesExcel
     }
 };
 
