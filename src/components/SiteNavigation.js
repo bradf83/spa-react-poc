@@ -30,6 +30,9 @@ class SiteNavigation extends React.Component {
                                     <NavLink href="/companies">Companies</NavLink>
                                 </NavItem>
                                 <NavItem>
+                                    <NavLink href="/products">Products</NavLink>
+                                </NavItem>
+                                <NavItem>
                                     <NavLink href="/exampleList">Examples</NavLink>
                                 </NavItem>
                                 <NavItem>

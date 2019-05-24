@@ -11,6 +11,7 @@ import Examples from './components/examples/Examples';
 import {Container} from 'reactstrap';
 import ExampleListing from "./components/examples/ExampleListing";
 import CodeGenerator from "./components/generator/CodeGenerator";
+import Products from "./components/products/Products";
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
                     <SecureRoute exact path="/companies" component={Companies}/>
                     <SecureRoute path="/companies/create" component={CompanyManage}/>
                     <SecureRoute path="/companies/:id" component={CompanyManage}/>
+                    <SecureRoute path="/products" component={Products}/>
                     <Route path='/examples' component={Examples}/>
                     <Route path='/exampleList' component={ExampleListing}/>
                     <Route path='/codeGenerator' component={CodeGenerator}/>

@@ -25,6 +25,11 @@ const API = auth => {
         return fetch('/owners', requestConfig);
     };
 
+    const loadProducts = async (page = 0, size = 2) => {
+        const requestConfig = await createRequestConfig(auth);
+        return fetch('/products?page=' + page + '&size=' + size, requestConfig);
+    };
+
     const saveCompany = async (company, id) => {
         const {headers} = await createRequestConfig(auth);
         return fetch('/companies' + (id === undefined ? '' : '/' + id), {
@@ -66,7 +71,8 @@ const API = auth => {
         loadCompany,
         loadOwners,
         saveCompany,
-        downloadCompaniesExcel
+        downloadCompaniesExcel,
+        loadProducts,
     }
 };
 
