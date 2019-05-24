@@ -18,6 +18,7 @@ const CodeGenerator = () => {
         {fieldName: 'fieldOne', type: 'int', nullable: 'true'},
         {fieldName: 'fieldTwo', type: 'String', nullable: 'true'}
         ]);
+    const [showParams, setShowParams] = useState(true);
     const [createTable, setCreateTable] = useState("");
     const [createModel, setCreateModel] = useState("");
     const [createProcessor, setCreateProcessor] = useState("");
@@ -34,6 +35,13 @@ const CodeGenerator = () => {
         let newState = {...formState};
         newState[target.name] = target.value;
         setFormState(newState);
+        if (target.name === 'type') {
+            if (target.value === 'String' || target.value === 'BigDecimal') {
+                setShowParams(true);
+            } else {
+                setShowParams(false);
+            }
+        }
     };
 
     const handleModelChange = ({target}) => {
@@ -81,9 +89,42 @@ const CodeGenerator = () => {
       // Engine (Maria)
         let create = '';
 
-        create += 'CREATE TABLE ' + model + ' (\n';
+        const lowerModel = model.toLowerCase();
+
+        create += 'CREATE TABLE ' + lowerModel + ' (\n';
+
+        create += '\tid bigserial constraint ' + lowerModel + '_pkey primary key,\n';
+
         fields.forEach((field, index) => {
-            create += '\t' + field.fieldName + ' ' + field.type;
+            create += '\t' + field.fieldName.toLowerCase() + ' ';
+            switch(field.type){
+                case 'BigDecimal':
+                    create += 'numeric(' + field.params + ')';
+                    break;
+                case 'boolean':
+                case 'Boolean':
+                    create += 'boolean';
+                    break;
+                case 'int':
+                case 'Integer':
+                    create += 'int';
+                    break;
+                case 'long':
+                case 'Long':
+                    create += 'bigint';
+                    break;
+                case 'LocalDateTime':
+                    create += 'timestamp';
+                    break;
+                case 'String':
+                    create += 'varchar(' + field.params + ')';
+                    break;
+                default:
+                    alert('Unsupported type passed!');
+            }
+            if(field.nullable !== undefined && field.nullable.toLowerCase() === 'false'){
+                create += ' NOT NULL';
+            }
             if(index !== fields.length - 1){
                 create += ','
             }
@@ -199,11 +240,20 @@ const CodeGenerator = () => {
                                 <option value="Boolean">Boolean</option>
                                 <option value="int">int</option>
                                 <option value="Integer">Integer</option>
+                                <option value="LocalDateTime">LocalDateTime</option>
                                 <option value="long">long</option>
                                 <option value="Long">Long</option>
                                 <option value="String">String</option>
                             </Input>
                         </FormGroup>
+
+                        {showParams &&
+                            <FormGroup>
+                                <Label for="params">Params</Label>
+                                <Input type="text" name="params" id="params" onChange={handleChange} placeholder="Params"/>
+                                <FormText>Enter extra params without the brackets for example for a String add 255 and it will create a DB field of varchar(255).</FormText>
+                            </FormGroup>
+                        }
                         <FormGroup>
                             <Label for="nullable">Nullable?</Label>
                             <Input type="select" name="nullable" id="nullable" onChange={handleChange}>
