@@ -23,7 +23,6 @@ const ProductManage = ({auth, history, match, location}) => {
             const token = await auth.getAccessToken();
             const response = await fetch(location.state.product._links.self.href, {header:{Authorization: `Bearer ${token}`}});
             const body = await response.json();
-            console.log(body);
             // Store product response
             setProduct(body);
             // Store etag version
