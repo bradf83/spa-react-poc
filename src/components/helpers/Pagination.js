@@ -1,6 +1,10 @@
 import React from 'react';
 import {withRouter} from "react-router-dom";
 
+// TODO: Not sure I like this pagination implementation, it works but does not follow the spirit of HAL
+// Should be able to pass a set of _links to this and it build the links off of that.  Then clicking one of those links
+// should load the new data set.
+
 const Pagination = ({history, match, pageInfo}) => {
     const handlePageChange = (page=0) => {
         history.push(match.url + '?pageNumber=' + page);

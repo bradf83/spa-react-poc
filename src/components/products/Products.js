@@ -7,6 +7,7 @@ import {withAuth} from '@okta/okta-react';
 import API from "../../api";
 import ListGroupItem from "reactstrap/es/ListGroupItem";
 import Pagination from "../helpers/Pagination";
+import {Link} from "react-router-dom";
 
 const Products = ({auth, location, match, history}) => {
     const [products, setProducts] = useState([]);
@@ -46,6 +47,7 @@ const Products = ({auth, location, match, history}) => {
                 </h3>
 
                 <div>
+                    {/* TODO: Not sure I like this pagination implementation, it works but does not follow the spirit of HAL*/}
                     <Pagination pageInfo={pageInfo}/>
                 </div>
 
@@ -53,10 +55,15 @@ const Products = ({auth, location, match, history}) => {
 
             <ListGroup>
                 {products && products.map(product =>
-                    <ListGroupItem key={product._links.self.href}>
+                    <Link key={product._links.self.href} className="list-group-item list-group-item-action" to={{
+                        pathname: '/products/manage',
+                        state: {
+                            product: product
+                        }
+                    }}>
                         {product.name}
                         <div className="small">{product.price}</div>
-                    </ListGroupItem>
+                    </Link>
                 )}
             </ListGroup>
         </Container>

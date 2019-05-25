@@ -14,6 +14,7 @@ import ExampleListing from "./components/examples/ExampleListing";
 import CodeGenerator from "./components/generator/CodeGenerator";
 import Products from "./components/products/Products";
 import {ToastContainer} from "react-toastify";
+import ProductManage from "./components/products/ProductManage";
 
 
 const App = () => {
@@ -28,7 +29,8 @@ const App = () => {
                     <SecureRoute exact path="/companies" component={Companies}/>
                     <SecureRoute path="/companies/create" component={CompanyManage}/>
                     <SecureRoute path="/companies/:id" component={CompanyManage}/>
-                    <SecureRoute path="/products" component={Products}/>
+                    <SecureRoute path="/products/manage" component={ProductManage}/>
+                    <SecureRoute exact path="/products" component={Products}/>
                     <Route path='/examples' component={Examples}/>
                     <Route path='/exampleList' component={ExampleListing}/>
                     <Route path='/codeGenerator' component={CodeGenerator}/>
