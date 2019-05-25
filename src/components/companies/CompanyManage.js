@@ -3,6 +3,7 @@ import {Button, Container, Form, FormFeedback, FormGroup, Input, Label} from 're
 import { withAuth } from '@okta/okta-react';
 import {Link, withRouter} from "react-router-dom";
 import API from "../../api";
+import {toast} from "react-toastify";
 
 // Helpers that need to be extracted
 
@@ -94,6 +95,9 @@ const CompanyManage = ({auth, history, match}) => {
 
             if(response.ok){
                 // Forward to list screen
+                toast.success("Success!", {
+                    position: toast.POSITION.TOP_RIGHT
+                });
                 history.push('/companies');
             } else {
                 const body = await response.json();

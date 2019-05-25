@@ -19,7 +19,6 @@ to build with the full api.
 
 ### TODO
 
-* Customize React Strap
 * Delete a company
 
 ### Things To Figure Out
@@ -29,10 +28,12 @@ to build with the full api.
 
 ###  Libraries I am using
 
-* React
-* React Router Dom
-* Okta
-* Reactstrap
+* React (yarn add react react-dom)
+* React Router Dom (yarn add react-router-dom)
+* Okta (yarn add @okta/okta-react)
+* Reactstrap (yarn add bootstrap reactstrap)
+* react-toastify (yarn add react-toastify)
+* Font Awesome (yarn add @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome)
 
 ### Customize Reactstrap Bootstrap
 
@@ -52,21 +53,6 @@ $btn-border-radius: 3000px;
 ```
 import './styles/custom.scss';
 ```
-
-### Commands I need to get used to
-
-* npm start / yarn start
-* yarn add react-router-dom
-* yarn add @okta/okta-react
-* yarn add bootstrap reactstrap react react-dom
-* yarn add @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome
-
-### Questions
-
-* Secure Route does not seem to be working
-  * This was because of the not found route,not sure why at this point
-  * Try using a component on the not found route
-* How do I stop /companies/:id from rendering when going to /companies/garbage, force id as an number?
   
 ### Things to look into 
 

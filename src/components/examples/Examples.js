@@ -3,6 +3,7 @@ import ListGroup from "reactstrap/es/ListGroup";
 import {Button, Container, Form, FormFeedback, FormGroup, Input, Label} from "reactstrap";
 import {Route, Switch, NavLink, Link, withRouter} from 'react-router-dom'
 import ListGroupItem from "reactstrap/es/ListGroupItem";
+import {toast} from "react-toastify";
 
 // TODO: I made my first example inline, make this the landing page with links to individual examples, extract this current one out.
 
@@ -19,6 +20,7 @@ const Examples = () => {
                             Products
                             <span className="badge badge-primary badge-pill">4</span>
                         </NavLink>
+                        <NavLink className="list-group-item list-group-item-action" to="/examples/toasts">Toasts</NavLink>
                     </ListGroup>
                 </div>
                 <div className="col-sm-9">
@@ -28,6 +30,7 @@ const Examples = () => {
                         <Route path="/examples/taxes" component={Taxes}/>
                         <Route path="/examples/products" exact component={Products}/>
                         <Route path="/examples/products/create" component={withRouter(ProductCreate)}/>
+                        <Route path="/examples/toasts" component={Toasts}/>
                     </Switch>
                 </div>
             </div>
@@ -338,6 +341,32 @@ const ProductCreate = ({history}) => {
                     <Button color="secondary" tag={Link} to="/examples/products">Cancel</Button>
                 </FormGroup>
             </Form>
+        </div>
+    )
+};
+
+// Toasts Example
+
+const Toasts = () => {
+    const handleSuccessToast = () => {toast.success('Success!', {position: toast.POSITION.TOP_RIGHT})};
+    const handleInfoToast = () => {toast.info('Info?', {position: toast.POSITION.TOP_CENTER})};
+    const handleErrorToast = () => {toast.error('Error!', {position: toast.POSITION.BOTTOM_RIGHT})};
+    return (
+        <div>
+            <div className="alert alert-info">
+                Toasts using React-Toastify
+            </div>
+            <div className="row">
+                <div className="col">
+                    <button type="button" className="btn btn-success" onClick={handleSuccessToast}>Success Top Right</button>
+                </div>
+                <div className="col">
+                    <button type="button" className="btn btn-info" onClick={handleInfoToast}>Info Top Middle</button>
+                </div>
+                <div className="col">
+                    <button type="button" className="btn btn-danger" onClick={handleErrorToast}>Error Bottom Right</button>
+                </div>
+            </div>
         </div>
     )
 };
