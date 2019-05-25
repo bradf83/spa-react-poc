@@ -85,3 +85,18 @@ if I could do a single call to hydrate the component.  One thing we could do is 
 us to pass back all the information we need.
     * I came across another way to accommodate this goal on the Spring Boot API side.  Create a resource processor to give us
     the additional information that we need.
+    
+### Wrapping My Head Around HAL API
+So this is my first time using a HAL API and after writing my pagination example I started to realize I am fighting against
+the HAL API rather than embracing it.  Old ways I used to build applications are forcing me to think a certain way when I
+need to step back and think how would I do this with a HAL API instead.
+
+* Resources do not have an ID present they provide a *self* link instead.
+    * This allows the client to follow/use the link rather than having to construct it
+    * How do you bookmark an individual item?  Do you only bookmark lists of items?
+* How does a list page for a resource work?
+    * Traditionally it would list the items and construct a link to the edit/view of the item
+        * This would mean a company list could have an item with the following edit link */companies/1*
+    * Using HAL it seems a list of items would instead pass the item and use the *self* link to load the item
+        * Would the link then be */company/edit* on the front end and pass the resource which would then load from the *self* link?
+            * Notice you would not be able to bookmark */company/edit* as going to it without a Company passed to it would fail.
