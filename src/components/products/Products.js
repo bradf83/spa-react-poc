@@ -5,7 +5,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBoxes} from "@fortawesome/free-solid-svg-icons";
 import {withAuth} from '@okta/okta-react';
 import API from "../../api";
-import ListGroupItem from "reactstrap/es/ListGroupItem";
 import Pagination from "../helpers/Pagination";
 import {Link} from "react-router-dom";
 

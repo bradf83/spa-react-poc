@@ -7,6 +7,11 @@ import {withRouter} from "react-router-dom";
 
 // TODO: Allows us to view the product for now, implement the manage part (create/edit).
 
+// Existing product from location.state.product._links.self.href
+// New product if no link
+// Maybe a hook that can load a product?
+
+
 const ProductManage = ({auth, history, match, location}) => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
