@@ -16,12 +16,12 @@ import Products from "./components/products/Products";
 import {ToastContainer} from "react-toastify";
 import ProductManage from "./components/products/ProductManage";
 
+const oktaConfig = { ...config.auth, redirect_uri: window.location.origin + '/implicit/callback'};
 
 const App = () => {
     return (
         <Router>
-            <Security issuer={config.auth.issuerURL} client_id={config.auth.clientId}
-                      redirect_uri={window.location.origin + '/implicit/callback'}>
+            <Security {...oktaConfig}>
                 <SiteNavigation/>
                 <ToastContainer />
                 <Switch>
