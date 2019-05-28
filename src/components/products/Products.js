@@ -5,35 +5,48 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBoxes} from "@fortawesome/free-solid-svg-icons";
 import {withAuth} from '@okta/okta-react';
 import API from "../../api";
-import Pagination from "../helpers/Pagination";
 import {Link} from "react-router-dom";
+import Pagination from "../helpers/Pagination";
 
-const Products = ({auth, location, match, history}) => {
+//TODO: Extract this so that it can be shared.
+/**
+ * Take a response from Spring Data rest and make a nice paging object from it.
+ * @param links
+ * @param page
+ * @returns {{next, last, prev, first}}
+ */
+const createPagingObject = (links, page) => {
+    // Open to better ways of doing this but basically get the link if its there otherwise default to undefined.
+    const {
+        first: {href: first} = {},
+        prev: {href: prev} = {},
+        next: {href: next} = {},
+        last: {href: last} = {},
+    } = links;
+
+    return {first, prev, next, last, ...page};
+};
+
+const Products = ({auth}) => {
     const [products, setProducts] = useState([]);
-    const [pageNumber, setPageNumber] = useState(0);
+    const [dataURL, setDataURL] = useState('/products?size=3'); // TODO: Default page for now
     const [pageInfo, setPageInfo] = useState(null);
 
     useEffect(() => {
-        let searchParams = new URLSearchParams(location.search);
-        let pageNbr = searchParams.get('pageNumber') == null ? 0 : searchParams.get('pageNumber');
-        setPageNumber(pageNbr);
-    }, [location.search]);
-
-    useEffect(() => {
-        const {loadProducts} = API(auth);
+        const {loadPage} = API(auth);
         const loadData = async () => {
             try{
                 //TODO: PageSize Component
-                const response = await loadProducts(pageNumber, 3);
+                const response = await loadPage(dataURL);
                 const body = await response.json();
                 setProducts(body._embedded.products);
-                setPageInfo(body.page);
+                setPageInfo(createPagingObject(body._links, body.page));
             } catch(error){
                 //TODO: What to do with error?
             }
         };
         loadData();
-    }, [auth, pageNumber]);
+    }, [auth, dataURL]);
 
     return (
         <Container>
@@ -46,8 +59,7 @@ const Products = ({auth, location, match, history}) => {
                 </h3>
 
                 <div>
-                    {/* TODO: Not sure I like this pagination implementation, it works but does not follow the spirit of HAL*/}
-                    <Pagination pageInfo={pageInfo}/>
+                    <Pagination pageInfo={pageInfo} handlePageChange={setDataURL}/>
                 </div>
 
             </div>

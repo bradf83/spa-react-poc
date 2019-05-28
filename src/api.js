@@ -25,9 +25,10 @@ const API = auth => {
         return fetch('/owners', requestConfig);
     };
 
-    const loadProducts = async (page = 0, size = 2) => {
+    //TODO: This is no longer product specific
+    const loadPage = async (url) => {
         const requestConfig = await createRequestConfig(auth);
-        return fetch('/products?page=' + page + '&size=' + size, requestConfig);
+        return fetch(url, requestConfig);
     };
 
     const saveCompany = async (company, id) => {
@@ -72,7 +73,7 @@ const API = auth => {
         loadOwners,
         saveCompany,
         downloadCompaniesExcel,
-        loadProducts,
+        loadPage,
     }
 };
 

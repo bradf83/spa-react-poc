@@ -1,51 +1,38 @@
 import React from 'react';
-import {withRouter} from "react-router-dom";
 
-// TODO: Not sure I like this pagination implementation, it works but does not follow the spirit of HAL
-// Should be able to pass a set of _links to this and it build the links off of that.  Then clicking one of those links
-// should load the new data set.
-
-const Pagination = ({history, match, pageInfo}) => {
-    const handlePageChange = (page=0) => {
-        history.push(match.url + '?pageNumber=' + page);
-    };
-
-    if(pageInfo === undefined || pageInfo === null){
+const Pagination = ({pageInfo, handlePageChange}) => {
+    if(pageInfo === null){
         return null;
     }
-
-    const currentPage = pageInfo.number;
-    const previousPage = currentPage === 0 ? 0 : currentPage - 1;
-    const nextPage = currentPage + 1 === pageInfo.totalPages ? currentPage : currentPage + 1;
-    const disablePrevious = currentPage === previousPage;
-    const disableNext = currentPage === nextPage;
+    const firstDisabled = pageInfo.number === 0 || pageInfo.first === undefined;
+    const lastDisabled = (pageInfo.number + 1) === pageInfo.totalPages || pageInfo.last === undefined;
     return (
         <nav>
             <ul className="pagination pagination-sm">
-                <li className={`page-item ${disablePrevious ? "disabled" : ""}`}>
-                    <button className="page-link" disabled={disablePrevious} onClick={() => handlePageChange(0)} aria-label="First">
+                <li className={`page-item ${firstDisabled ? "disabled" : ""}`}>
+                    <button className="page-link" disabled={firstDisabled} onClick={() => handlePageChange(pageInfo.first)} aria-label="First">
                         <span aria-hidden="true">&laquo;</span>
                     </button>
                 </li>
-                <li className={`page-item ${disablePrevious ? "disabled" : ""}`}>
-                    <button className="page-link"  disabled={disablePrevious} onClick={() => handlePageChange(previousPage)} aria-label="Previous">
+                <li className={`page-item ${pageInfo.prev ? "" : "disabled"}`}>
+                    <button className="page-link"  disabled={pageInfo.prev === undefined} onClick={() => handlePageChange(pageInfo.prev)} aria-label="Previous">
                         <span aria-hidden="true">&lt;</span>
                     </button>
                 </li>
-                <li className="page-item active"><span className="page-link">{currentPage + 1}</span></li>
-                <li className={`page-item ${disableNext ? "disabled" : ""}`}>
-                    <button className="page-link" disabled={disableNext} onClick={() => handlePageChange(nextPage)} aria-label="Next">
+                <li className="page-item active"><span className="page-link">{pageInfo.number + 1}</span></li>
+                <li className={`page-item ${pageInfo.next ? "" : "disabled"}`}>
+                    <button className="page-link" disabled={pageInfo.next === undefined} onClick={() => handlePageChange(pageInfo.next)} aria-label="Next">
                         <span aria-hidden="true">&gt;</span>
                     </button>
                 </li>
-                <li className={`page-item ${disableNext ? "disabled" : ""}`}>
-                    <button className="page-link" disabled={disableNext} onClick={() => handlePageChange(pageInfo.totalPages - 1)} aria-label="Last">
+                <li className={`page-item ${lastDisabled ? "disabled" : ""}`}>
+                    <button className="page-link" disabled={lastDisabled} onClick={() => handlePageChange(pageInfo.last)} aria-label="Last">
                         <span aria-hidden="true">&raquo;</span>
                     </button>
                 </li>
             </ul>
         </nav>
-    )
+    );
 };
 
-export default withRouter(Pagination);
+export default Pagination;
