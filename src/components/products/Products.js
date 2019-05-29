@@ -14,8 +14,9 @@ import PagingPageCount from "../helpers/PagingPageCount";
 //TODO: Extract this so that it can be shared.
 /**
  * Take a response from Spring Data rest and make a nice paging object from it.
- * @param links
- * @param page
+ * @param links - the _links object from the Spring Data Rest response
+ * @param page - the page object from the Spring Data Rest response
+ * @param itemsOnPage - the length of the _embedded array.
  * @returns {{next, last, prev, first}}
  */
 const createPagingObject = (links, page, itemsOnPage) => {
@@ -32,7 +33,7 @@ const createPagingObject = (links, page, itemsOnPage) => {
 
 const Products = ({auth}) => {
     const [products, setProducts] = useState([]);
-    const [dataURL, setDataURL] = useState(null); // TODO: Default page for now
+    const [dataURL, setDataURL] = useState(null);
     const [pageInfo, setPageInfo] = useState(null);
     const [pageSize, setPageSize] = useState("3");
 
@@ -66,6 +67,7 @@ const Products = ({auth}) => {
                 Products
             </h3>
             <div className="d-flex justify-content-between">
+                {/*TODO Is there a better way to do this?  feels clunky, basically I want a small select on the left for page selection*/}
                 <div className="w-auto">
                     <PagingPageSize pageSize={pageSize} handlePageSizeChange={setPageSize}/>
                 </div>
