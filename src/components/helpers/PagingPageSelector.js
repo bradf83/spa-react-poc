@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Pagination = ({pageInfo, handlePageChange}) => {
+const PagingPageSelector = ({pageInfo, handlePageChange}) => {
     if(pageInfo === null){
         return null;
     }
@@ -35,4 +35,4 @@ const Pagination = ({pageInfo, handlePageChange}) => {
     );
 };
 
-export default Pagination;
+export default PagingPageSelector;
