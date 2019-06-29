@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import ListGroup from "reactstrap/es/ListGroup";
 import {Button, Container, Form, FormFeedback, FormGroup, Input, Label} from "reactstrap";
 import {Route, Switch, NavLink, Link, withRouter} from 'react-router-dom'
@@ -21,6 +21,7 @@ const Examples = () => {
                             <span className="badge badge-primary badge-pill">4</span>
                         </NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/toasts">Toasts</NavLink>
+                        <NavLink className="list-group-item list-group-item-action" to="/examples/nestedState">Nested State</NavLink>
                     </ListGroup>
                 </div>
                 <div className="col-sm-9">
@@ -31,6 +32,7 @@ const Examples = () => {
                         <Route path="/examples/products" exact component={Products}/>
                         <Route path="/examples/products/create" component={withRouter(ProductCreate)}/>
                         <Route path="/examples/toasts" component={Toasts}/>
+                        <Route path="/examples/nestedState" component={NestedState}/>
                     </Switch>
                 </div>
             </div>
@@ -367,6 +369,38 @@ const Toasts = () => {
                     <button type="button" className="btn btn-danger" onClick={handleErrorToast}>Error Bottom Right</button>
                 </div>
             </div>
+        </div>
+    )
+};
+
+// Update Nested State
+
+const NestedState = () => {
+    const [nested, setNested] = useState({active: true, name: "Some Shallow Name", nester: {active: false, name: "Some Name"}});
+
+    const updateState = () => {
+        setNested(nest =>{
+            return {...nest, nester:{...nest.nester, name: 'Some Other Name'}}
+        });
+    };
+
+    return (
+        <div>
+            <p>An example of updating an object with nested properties.  A few things to remember:</p>
+            <ul>
+                <li>The spread operator does a shallow clone, anything nested is by reference.  Make sure you set nested properties like shown above</li>
+                <li>Consider using a library for deep cloning such as lodash.deepClone</li>
+                <li>React DOES NOT update when setState is called with mutated state, if you want to forceUpdate there is a hack to do that listed on the React Hooks FAQ.</li>
+            </ul>
+            <button type="button" onClick={updateState}>Update State</button>
+            <br/>
+            {`Shallow Active: ${nested.active}`}
+            <br/>
+            {`Shallow Name: ${nested.name}`}
+            <br/>
+            {`Deep Active: ${nested.nester.active}`}
+            <br/>
+            {`Deep Name: ${nested.nester.name}`}
         </div>
     )
 };

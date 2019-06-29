@@ -15,7 +15,7 @@ import {withRouter} from "react-router-dom";
 const ProductManage = ({auth, history, match, location}) => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
-    const [etag, setEtag ] = useState (null);
+    const [setEtag ] = useState (null);
 
     useEffect(() => {
         if(product !== null){
@@ -34,7 +34,7 @@ const ProductManage = ({auth, history, match, location}) => {
             setEtag(response.headers.get('etag'));
         };
         loadProduct();
-    }, [auth, location]);
+    }, [auth, location, setEtag]);
 
     if(loading === true){
         return (
