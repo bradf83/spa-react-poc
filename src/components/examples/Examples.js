@@ -379,9 +379,19 @@ const NestedState = () => {
     const [nested, setNested] = useState({active: true, name: "Some Shallow Name", nester: {active: false, name: "Some Name"}});
 
     const updateState = () => {
+
+        // Example of some fancy console logging supported by chrome
+
+        // if(console.group) to disable this type of logging when needed
+        // if(process.env.NODE_ENV !== 'production') to only run a certain piece of code outside of production
+
+        console.group("Update State");
+        console.log('%c Before Message', 'color: orange');
         setNested(nest =>{
             return {...nest, nester:{...nest.nester, name: 'Some Other Name'}}
         });
+        console.log('%c After Message', 'color: green');
+        console.groupEnd("Update State");
     };
 
     return (

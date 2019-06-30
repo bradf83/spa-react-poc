@@ -42,6 +42,7 @@ const ExampleList = () => {
         {title: 'Creating a List of Objects', location: '/examples/products/', description: 'A list of objects that you may create more, delete or edit from.'},
         {title: 'Profile Example', location: '/examples/owner', description: 'A profile example that needs a lot of work!'},
         {title: 'Toasts', location: '/examples/toasts', description: 'Add toasts to your application!'},
+        {title: 'Nested State', location: '/examples/nestedState', description: 'Example and notes when updating nested state.  Also includes an example of grouping log messages and coloring them.'},
     ];
 
     // Using the title as the key here, would use a better key if this was not an example.
