@@ -43,6 +43,7 @@ const ExampleList = () => {
         {title: 'Profile Example', location: '/examples/owner', description: 'A profile example that needs a lot of work!'},
         {title: 'Toasts', location: '/examples/toasts', description: 'Add toasts to your application!'},
         {title: 'Nested State', location: '/examples/nestedState', description: 'Example and notes when updating nested state.  Also includes an example of grouping log messages and coloring them.'},
+        {title: 'Todo with useReducer', location: '/examples/todoExample', description: 'Example TODO list with useReducer hook.  Uses uuid to generate random ids.'},
     ];
 
     // Using the title as the key here, would use a better key if this was not an example.

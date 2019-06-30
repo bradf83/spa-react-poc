@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import ListGroup from "reactstrap/es/ListGroup";
 import {Button, Container, Form, FormFeedback, FormGroup, Input, Label} from "reactstrap";
 import {Route, Switch, NavLink, Link, withRouter} from 'react-router-dom'
 import ListGroupItem from "reactstrap/es/ListGroupItem";
 import {toast} from "react-toastify";
+import v4 from "uuid/v4";
+import {faBuilding, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 // TODO: I made my first example inline, make this the landing page with links to individual examples, extract this current one out.
 
@@ -22,6 +25,7 @@ const Examples = () => {
                         </NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/toasts">Toasts</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/nestedState">Nested State</NavLink>
+                        <NavLink className="list-group-item list-group-item-action" to="/examples/todoExample">Todo Example</NavLink>
                     </ListGroup>
                 </div>
                 <div className="col-sm-9">
@@ -33,6 +37,7 @@ const Examples = () => {
                         <Route path="/examples/products/create" component={withRouter(ProductCreate)}/>
                         <Route path="/examples/toasts" component={Toasts}/>
                         <Route path="/examples/nestedState" component={NestedState}/>
+                        <Route path="/examples/todoExample" component={TodoExample}/>
                     </Switch>
                 </div>
             </div>
@@ -412,6 +417,86 @@ const NestedState = () => {
             <br/>
             {`Deep Name: ${nested.nester.name}`}
         </div>
+    )
+};
+
+// TODO with useReducer Example
+
+const initialTodos = [
+    {id: v4(), task: 'Learn useReducer', complete: false},
+    {id: v4(), task: 'Learn Redux', complete: false}
+];
+
+const todoReducer = (state, action) => {
+    switch(action.type){
+        case 'ADD_TODO':
+            return state.concat({
+                id: v4(),
+                task: action.task,
+                complete: false
+            });
+        case 'TOGGLE_TODO':
+            return state.map(todo => {
+               if(todo.id === action.id){
+                   return {...todo, complete: !todo.complete};
+               } else {
+                   return todo;
+               }
+            });
+        case 'REMOVE_TODO':
+            return state.filter( todo =>
+                todo.id !== action.id
+            );
+        default:
+            return state;
+    }
+};
+
+const TodoExample = () => {
+    const [todos, dispatch] = useReducer(todoReducer, initialTodos);
+
+    const handleToggle = (todo) => {
+        dispatch({id: todo.id, type: 'TOGGLE_TODO'});
+    };
+
+    const handleAddTodo = (event) => {
+        if(event.keyCode === 13){
+            const task = event.target.value;
+            if(task === undefined || task === ''){
+                alert('You need to enter a description for the task.')
+            } else {
+                dispatch({
+                    type: 'ADD_TODO',
+                    task: event.target.value
+                });
+                event.target.value = '';
+            }
+        }
+    };
+
+    const handleRemoveTodo = (todo) => {
+        dispatch({type: 'REMOVE_TODO', id: todo.id});
+    };
+
+    return (
+        <>
+            <h2>TODOs ({todos.length})</h2>
+            <ul>
+                {todos.map(todo => (
+                    <li key={todo.id} onClick={() => handleToggle(todo)}>
+                        {todo.task} - {todo.complete ? 'Complete' : 'Outstanding'}
+                        <button type="button" className="btn btn-sm btn-outline-danger ml-1" onClick={() => handleRemoveTodo(todo)}>
+                            <FontAwesomeIcon icon={faTrash} size="sm" fixedWidth={true}/>
+                        </button>
+                    </li>
+                ))}
+                {todos.length === 0 && (
+                    <li>No TODOs, add some below</li>
+                )}
+            </ul>
+            <input type="text" className="form-control" autoFocus onKeyDown={handleAddTodo} placeholder="Add a todo here and press enter."
+                   title={"Enter a task description and press enter."}/>
+        </>
     )
 };
 
