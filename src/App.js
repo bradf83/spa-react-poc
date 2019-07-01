@@ -15,6 +15,7 @@ import CodeGenerator from "./components/generator/CodeGenerator";
 import Products from "./components/products/Products";
 import {ToastContainer} from "react-toastify";
 import ProductManage from "./components/products/ProductManage";
+import CampingApp from "./components/camping/CampingApp";
 
 const oktaConfig = { ...config.auth, redirect_uri: window.location.origin + '/implicit/callback'};
 
@@ -34,6 +35,7 @@ const App = () => {
                     <Route path='/examples' component={Examples}/>
                     <Route path='/exampleList' component={ExampleListing}/>
                     <Route path='/codeGenerator' component={CodeGenerator}/>
+                    <Route path='/campingApp' component={CampingApp}/>
                     <Route path='/implicit/callback' component={ImplicitCallback}/>
                     <Route render={() => {return <Container><h3>Not Found</h3></Container>}}/>
                 </Switch>
