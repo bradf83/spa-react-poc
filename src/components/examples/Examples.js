@@ -5,7 +5,7 @@ import {Route, Switch, NavLink, Link, withRouter} from 'react-router-dom'
 import ListGroupItem from "reactstrap/es/ListGroupItem";
 import {toast} from "react-toastify";
 import v4 from "uuid/v4";
-import {faBuilding, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 // TODO: I made my first example inline, make this the landing page with links to individual examples, extract this current one out.
@@ -26,6 +26,7 @@ const Examples = () => {
                         <NavLink className="list-group-item list-group-item-action" to="/examples/toasts">Toasts</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/nestedState">Nested State</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/todoExample">Todo Example</NavLink>
+                        <NavLink className="list-group-item list-group-item-action" to="/examples/crudExample">Crud List Example</NavLink>
                     </ListGroup>
                 </div>
                 <div className="col-sm-9">
@@ -38,6 +39,7 @@ const Examples = () => {
                         <Route path="/examples/toasts" component={Toasts}/>
                         <Route path="/examples/nestedState" component={NestedState}/>
                         <Route path="/examples/todoExample" component={TodoExample}/>
+                        <Route path="/examples/crudExample" component={CrudExample}/>
                     </Switch>
                 </div>
             </div>
@@ -497,6 +499,86 @@ const TodoExample = () => {
             <input type="text" className="form-control" autoFocus onKeyDown={handleAddTodo} placeholder="Add a todo here and press enter."
                    title={"Enter a task description and press enter."}/>
         </>
+    )
+};
+
+// Crud Example
+
+const crudObjects = [
+    {id: v4(), name: 'First Object', booleanOne: false, booleanTwo: false, booleanThree: false, _deepObject: [{label: 'One', text: 'Two'},{label:'Three', text: 'Four'}]},
+    {id: v4(), name: 'Second Object', booleanOne: false, booleanTwo: true, booleanThree: false, _deepObject: [{label: 'One', text: 'Two'},{label:'Three', text: 'Four'}]},
+    {id: v4(), name: 'Third Object', booleanOne: true, booleanTwo: true, booleanThree: true, _deepObject: [{label: 'One', text: 'Two'},{label:'Three', text: 'Four'}]},
+];
+
+const itemReducer = (state, action) => {
+    switch(action.type){
+        case 'TOGGLE_FLAG':
+            return state.map(item => {
+                if(item.id === action.id){
+                    return {...item, [action.name]: !item[action.name]};
+                } else {
+                    return item;
+                }
+            });
+        default:
+            return state;
+    }
+};
+
+const CrudExample = () => {
+    const [items, dispatch] = useReducer(itemReducer, crudObjects);
+
+    const logState = () => {
+        console.log(items);
+    };
+
+    return (
+        <>
+            <h2>Crud List Example</h2>
+            <p>This example was to challenge myself to keep state at the top level component and not set any state when
+            passing params.  Things I noticed:</p>
+            <ul>
+                <li>When I updated a toggle React renders the entire list again due to the state change.</li>
+            </ul>
+            <div className="text-right mb-2">
+                <button type="button" className="btn btn-sm btn-outline-info" onClick={logState}>Log State</button>
+            </div>
+            <div className="list-group">
+                {items.map(item =>
+                    <CrudExampleItem key={item.id} item={item} dispatch={dispatch} />
+                )}
+            </div>
+        </>
+    )
+};
+
+const CrudExampleItem = ({item, dispatch}) => {
+    return (
+        <div className="list-group-item">
+            {item.name}
+            <hr/>
+            <div className="form form-inline align-items-center d-flex justify-content-between">
+                <CrudExampleItemToggle id={item.id} name={"booleanOne"} label={"Boolean One?"} value={item.booleanOne} dispatch={dispatch}/>
+                <CrudExampleItemToggle id={item.id} name={"booleanTwo"} label={"Boolean Two?"} value={item.booleanTwo} dispatch={dispatch}/>
+                <CrudExampleItemToggle id={item.id} name={"booleanThree"} label={"Boolean Three?"} value={item.booleanThree} dispatch={dispatch}/>
+            </div>
+        </div>
+    )
+};
+
+const CrudExampleItemToggle = ({id, name, value, label, dispatch}) => {
+    const handleToggle = () => {
+        dispatch({
+            type: 'TOGGLE_FLAG',
+            id,
+            name
+        });
+    };
+    return (
+        <div className="custom-control custom-switch">
+            <input type="checkbox" className="custom-control-input" id={`js-${name}-${id}`} onChange={handleToggle} checked={value}/>
+            <label className="custom-control-label" htmlFor={`js-${name}-${id}`}>{label}</label>
+        </div>
     )
 };
 
