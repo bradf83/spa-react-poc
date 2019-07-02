@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import v4 from 'uuid';
 import {Link, Route, Switch} from "react-router-dom";
 
 // The wife asking for an app to help her track what she needs for camping so here goes.
@@ -75,14 +74,14 @@ const Trips = ({match}) => {
 
 const Trip = ({match: {params: {tripId}}}) => {
     const [trip, setTrip] = useState(null);
-    const [selectedList, setSelectedList] = useState(sampleDataStructure[0].lists[1].id);
+    const [selectedList, setSelectedList] = useState(sampleDataStructure[0].lists[0]);
 
     useEffect(() => {
         setTrip(sampleDataStructure.find(element => element.id === tripId))
     }, [tripId]);
 
     const handleListChange = ({target: {value}}) => {
-        setSelectedList(value);
+        setSelectedList(sampleDataStructure[0].lists.find(list => list.id === value));
     };
 
     return (
@@ -90,13 +89,19 @@ const Trip = ({match: {params: {tripId}}}) => {
             {trip && (
                 <>
                     <h2>{trip.name}</h2>
-                    <select name="selectedList" className="form-control" value={selectedList} onChange={handleListChange}>
+                    <select name="selectedList" className="form-control" value={selectedList.id} onChange={handleListChange}>
                         {trip.lists.map(list =>
                             <option key={list.id} value={list.id}>{list.name}</option>
                         )}
                     </select>
                     <h3>Items</h3>
-                    <p>{selectedList}</p>
+                    <div className="list-group">
+                        {selectedList.items.map(item =>
+                            <div key={item.id} className="list-group-item">
+                                {item.name} : {item.quantity} : {item.completed + ""};
+                            </div>
+                        )}
+                    </div>
                 </>
             )}
         </>
