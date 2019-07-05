@@ -27,6 +27,7 @@ const Examples = () => {
                         <NavLink className="list-group-item list-group-item-action" to="/examples/nestedState">Nested State</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/todoExample">Todo Example</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/crudExample">Crud List Example</NavLink>
+                        <NavLink className="list-group-item list-group-item-action" to="/examples/childrenExample">Chidlren Example</NavLink>
                     </ListGroup>
                 </div>
                 <div className="col-sm-9">
@@ -40,6 +41,7 @@ const Examples = () => {
                         <Route path="/examples/nestedState" component={NestedState}/>
                         <Route path="/examples/todoExample" component={TodoExample}/>
                         <Route path="/examples/crudExample" component={CrudExample}/>
+                        <Route path="/examples/childrenExample" component={ChildrenExample}/>
                     </Switch>
                 </div>
             </div>
@@ -580,6 +582,72 @@ const CrudExampleItemToggle = ({id, name, value, label, dispatch}) => {
             <label className="custom-control-label" htmlFor={`js-${name}-${id}`}>{label}</label>
         </div>
     )
+};
+
+const initialErrorState = [
+    {message: 'Error 1', property: 'name'},
+    {message: 'Error 2', property: 'name'},
+    {message: 'Error 3', property: 'email'},
+];
+
+
+const ChildrenExample = () => {
+    const [errors, setErrors] = useState([initialErrorState]);
+    const [fake, setFake] = useState('');
+
+    return (
+        <>
+            <button type="button" className="btn btn-sm btn-outline-info" onClick={() => setErrors([])}>Remove Errors</button>
+            <button type="button" className="btn btn-sm btn-outline-danger ml-2" onClick={() => setErrors(initialErrorState)}>Add Errors</button>
+            <MyFormGroup errors={errors} property="name">
+                <label htmlFor="me">Label</label>
+                <input type="text" className="form-control" id="me" name="name" value={fake} onChange={(evt) => setFake(evt.target.value)}/>
+                <div className="form-text">
+                    Some Help Text
+                </div>
+            </MyFormGroup>
+        </>
+    )
+};
+
+const MyFormGroup = ({children, errors, property}) => {
+
+    const filteredErrors = errors.filter(error => error.property === property);
+
+    const newChildren = React.Children.map(children, (child) => {
+
+        let additionalClass = "";
+        switch(child.type){
+            case "label":
+                additionalClass = errors.length > 0 ? "text-danger" : "";
+                break;
+            case "input":
+                additionalClass = errors.length > 0 ? "is-invalid" : "";
+                break;
+            case "div":
+                additionalClass = errors.length > 0 ? "invalid-feedback" : "";
+                break;
+            default:
+                additionalClass = "";
+        }
+
+        return React.cloneElement(child, {...child.props, className:  filteredErrors.length > 0 ? child.props.className + " " + additionalClass : child.props.className});
+    });
+
+  return (
+    <div>
+        {newChildren}
+        {filteredErrors && filteredErrors.length > 0 && (
+            <div>
+                <ul>
+                    {filteredErrors.map(error =>
+                        <li>{error.message}</li>
+                    )}
+                </ul>
+            </div>
+        )}
+    </div>
+  )
 };
 
 export default Examples;
