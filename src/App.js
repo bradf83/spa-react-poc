@@ -16,31 +16,37 @@ import Products from "./components/products/Products";
 import {ToastContainer} from "react-toastify";
 import ProductManage from "./components/products/ProductManage";
 import CampingApp from "./components/camping/CampingApp";
+import ErrorBoundary from "./components/errors/ErrorBoundary";
+import InnerErrorBoundary from "./components/errors/InnerErrorBoundary";
 
 const oktaConfig = { ...config.auth, redirect_uri: window.location.origin + '/implicit/callback'};
 
 const App = () => {
     return (
-        <Router>
-            <Security {...oktaConfig}>
-                <SiteNavigation/>
-                <ToastContainer />
-                <Switch>
-                    <Route exact path='/' component={Home}/>
-                    <SecureRoute exact path="/companies" component={Companies}/>
-                    <SecureRoute path="/companies/create" component={CompanyManage}/>
-                    <SecureRoute path="/companies/:id" component={CompanyManage}/>
-                    <SecureRoute path="/products/manage" component={ProductManage}/>
-                    <SecureRoute exact path="/products" component={Products}/>
-                    <Route path='/examples' component={Examples}/>
-                    <Route path='/exampleList' component={ExampleListing}/>
-                    <Route path='/codeGenerator' component={CodeGenerator}/>
-                    <Route path='/campingApp' component={CampingApp}/>
-                    <Route path='/implicit/callback' component={ImplicitCallback}/>
-                    <Route render={() => {return <Container><h3>Not Found</h3></Container>}}/>
-                </Switch>
-            </Security>
-        </Router>
+        <ErrorBoundary>
+            <Router>
+                <Security {...oktaConfig}>
+                    <SiteNavigation/>
+                    <InnerErrorBoundary>
+                        <ToastContainer />
+                        <Switch>
+                            <Route exact path='/' component={Home}/>
+                            <SecureRoute exact path="/companies" component={Companies}/>
+                            <SecureRoute path="/companies/create" component={CompanyManage}/>
+                            <SecureRoute path="/companies/:id" component={CompanyManage}/>
+                            <SecureRoute path="/products/manage" component={ProductManage}/>
+                            <SecureRoute exact path="/products" component={Products}/>
+                            <Route path='/examples' component={Examples}/>
+                            <Route path='/exampleList' component={ExampleListing}/>
+                            <Route path='/codeGenerator' component={CodeGenerator}/>
+                            <Route path='/campingApp' component={CampingApp}/>
+                            <Route path='/implicit/callback' component={ImplicitCallback}/>
+                            <Route render={() => {return <Container><h3>Not Found</h3></Container>}}/>
+                        </Switch>
+                    </InnerErrorBoundary>
+                </Security>
+            </Router>
+        </ErrorBoundary>
     )
 };
 

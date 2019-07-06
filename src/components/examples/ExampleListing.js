@@ -46,6 +46,7 @@ const ExampleList = () => {
         {title: 'Todo with useReducer', location: '/examples/todoExample', description: 'Example TODO list with useReducer hook.  Uses uuid to generate random ids.'},
         {title: 'Crud List Example', location: '/examples/crudExample', description: 'Crud list example, three checkboxes per item on the list, useReducer for managing state.'},
         {title: 'React Children Example', location: '/examples/childrenExample', description: 'An example utilizing React Children to create a dynamic error form group.'},
+        {title: 'Error Boundary Example', location: '/examples/errorBoundaryExample', description: 'An example showing error boundaries.  Take careful note of the three use cases, the last one about errors inside handlers is important to understand.'},
     ];
 
     // Using the title as the key here, would use a better key if this was not an example.

@@ -27,7 +27,8 @@ const Examples = () => {
                         <NavLink className="list-group-item list-group-item-action" to="/examples/nestedState">Nested State</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/todoExample">Todo Example</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/crudExample">Crud List Example</NavLink>
-                        <NavLink className="list-group-item list-group-item-action" to="/examples/childrenExample">Chidlren Example</NavLink>
+                        <NavLink className="list-group-item list-group-item-action" to="/examples/childrenExample">Children Example</NavLink>
+                        <NavLink className="list-group-item list-group-item-action" to="/examples/errorBoundaryExample">Error Boundary Example</NavLink>
                     </ListGroup>
                 </div>
                 <div className="col-sm-9">
@@ -42,6 +43,7 @@ const Examples = () => {
                         <Route path="/examples/todoExample" component={TodoExample}/>
                         <Route path="/examples/crudExample" component={CrudExample}/>
                         <Route path="/examples/childrenExample" component={ChildrenExample}/>
+                        <Route path="/examples/errorBoundaryExample" component={ErrorBoundaryExample}/>
                     </Switch>
                 </div>
             </div>
@@ -648,6 +650,40 @@ const MyFormGroup = ({children, errors, property}) => {
         )}
     </div>
   )
+};
+
+const ErrorBoundaryExample = () => {
+    const [innerError, setInnerError] = useState(false);
+    const [outerError, setOuterError] = useState(false);
+
+    const handleHandlerError = () => {
+        throw Error('Handler Error');
+    };
+
+    if(innerError){
+        throw Error('Inner Error');
+    }
+
+    if(outerError){
+        throw Error('chuck it');
+    }
+
+    return (
+        <div>
+            <h2>Error Boundary Example</h2>
+            <p>This shows an example of using error boundaries.  I currently have an inner boundary and outer boundary
+            in place.  The buttons below help test the boundaries.  Remember to press the 'X' on the React development
+            error page so that you can see the boundary result (fallback UI).</p>
+            <p>Take note of the following:</p>
+            <ul>
+                <li>The first two buttons throw errors outside of handler methods and are caught by the boundary.  The third button throws an error in a handler method and is not caught by either boundary.</li>
+            </ul>
+
+            <button type="button" className="btn btn-warning" onClick={() => setInnerError(true)}>Test Inner Boundary</button>
+            <button type="button" className="btn btn-danger ml-2" onClick={() => setOuterError(true)}>Test Outer Boundary</button>
+            <button type="button" className="btn btn-info ml-2" onClick={handleHandlerError}>Test Handler Error</button>
+        </div>
+    )
 };
 
 export default Examples;
