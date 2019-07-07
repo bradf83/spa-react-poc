@@ -29,6 +29,7 @@ const Examples = () => {
                         <NavLink className="list-group-item list-group-item-action" to="/examples/crudExample">Crud List Example</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/childrenExample">Children Example</NavLink>
                         <NavLink className="list-group-item list-group-item-action" to="/examples/errorBoundaryExample">Error Boundary Example</NavLink>
+                        <NavLink className="list-group-item list-group-item-action" to="/examples/authorizationExample">Authorization Example</NavLink>
                     </ListGroup>
                 </div>
                 <div className="col-sm-9">
@@ -44,6 +45,7 @@ const Examples = () => {
                         <Route path="/examples/crudExample" component={CrudExample}/>
                         <Route path="/examples/childrenExample" component={ChildrenExample}/>
                         <Route path="/examples/errorBoundaryExample" component={ErrorBoundaryExample}/>
+                        <Route path="/examples/authorizationExample" component={AuthorizationExample}/>
                     </Switch>
                 </div>
             </div>
@@ -683,6 +685,52 @@ const ErrorBoundaryExample = () => {
             <button type="button" className="btn btn-danger ml-2" onClick={() => setOuterError(true)}>Test Outer Boundary</button>
             <button type="button" className="btn btn-info ml-2" onClick={handleHandlerError}>Test Handler Error</button>
         </div>
+    )
+};
+
+const hasRole = (user, roles) => {
+    if(!(roles instanceof Array)){
+        throw Error('The roles parameter must be an array of Strings');
+    }
+    return roles.some(role => user.roles.includes(role));
+};
+
+const AuthorizationExample = () => {
+
+    const normalUser = {
+        roles: ['Everyone']
+    };
+
+    const adminUser = {
+        roles: ['Everyone', 'Admin']
+    };
+
+    return (
+        <>
+            <h2>Authorization Example</h2>
+            <p>There are libraries out there that do authorization for React, but in most cases this is a simple check
+            based on roles/abilities and rendering/allowing an action based on that.  In this case I have implemented
+            a simple hasRole function to demonstrate authorization.  This method can be adapted to most use cases.</p>
+            <hr/>
+            <h4>User with Everyone Role</h4>
+            <AuthComponent user={normalUser}/>
+            <hr/>
+            <h4>User with Admin Role</h4>
+            <AuthComponent user={adminUser}/>
+        </>
+    )
+};
+
+const AuthComponent = ({user}) => {
+    return (
+        <>
+            {hasRole(user, ['Everyone']) && (
+                <div>This user has the everyone role.</div>
+            )}
+            {hasRole(user, ['Admin']) && (
+                <div>This user has the admin role.</div>
+            )}
+        </>
     )
 };
 
