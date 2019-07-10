@@ -18,6 +18,7 @@ import ProductManage from "./components/products/ProductManage";
 import CampingApp from "./components/camping/CampingApp";
 import ErrorBoundary from "./components/errors/ErrorBoundary";
 import InnerErrorBoundary from "./components/errors/InnerErrorBoundary";
+import Secure from "./components/secure/Secure";
 
 const oktaConfig = { ...config.auth, redirect_uri: window.location.origin + '/implicit/callback'};
 
@@ -36,6 +37,7 @@ const App = () => {
                             <SecureRoute path="/companies/:id" component={CompanyManage}/>
                             <SecureRoute path="/products/manage" component={ProductManage}/>
                             <SecureRoute exact path="/products" component={Products}/>
+                            <SecureRoute exact path="/secure" component={Secure}/>
                             <Route path='/examples' component={Examples}/>
                             <Route path='/exampleList' component={ExampleListing}/>
                             <Route path='/codeGenerator' component={CodeGenerator}/>
